@@ -39,15 +39,14 @@
 
 **3.npm run dev**  
 
-```         
+       
 ## Running the tests
  
 **启动idea出现如下信息说明运行成功**  
 
-o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8000 (http) with context path ''  
-
-com.cn.app.chatgptbot.Application        : Started Application in 5.138 seconds (process running for 5.521)
- 
+App running at:
+  - Local:   http://localhost:3000/ 
+  - Network: http://192.168.70.153:3000/
  
 ## Express gratitude
  
