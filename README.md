@@ -66,8 +66,8 @@ App running at:
 
 这个项目的存在要感谢所有做出贡献的人.
 
-<a href="https://github.com/a616567126/GPT-WEB-JAVA/graphs/contributors">
-<img src="https://contrib.rocks/image?repo=a616567126/GPT-WEB-JAVA" />
+<a href="https://github.com/a616567126/GPT-WEB-CLIENT/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=a616567126/GPT-WEB-CLIENT" />
 </a>
  
  
@@ -81,7 +81,7 @@ App running at:
 ## 记得点一个Star哦!!!!
 
 --
-[![Star History Chart](https://api.star-history.com/svg?repos=a616567126/GPT-WEB-JAVA&type=Timeline)](https://star-history.com/#a616567126/GPT-WEB-JAVA&Timeline)
+[![Star History Chart](https://api.star-history.com/svg?repos=a616567126/GPT-WEB-CLIENT&type=Timeline)](https://star-history.com/#a616567126/GPT-WEB-CLIENT&Timeline)
 
 ## License
 
