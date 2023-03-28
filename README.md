@@ -42,7 +42,7 @@
        
 ## Running the tests
  
-**启动idea出现如下信息说明运行成功**  
+**使用VSCode或控制台出现如下信息说明运行成功**  
 
 App running at:
   - Local:   http://localhost:3000/ 
