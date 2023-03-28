@@ -8,7 +8,9 @@
 
 # **Project Title**
  
-**基于Vue2.0的GPTweb客户端
+**基于Vue2.0的GPTweb客户端  
+
+**demo地址：http://gptai.v-wim.xyz**   
  
 ## Getting Started  
 
