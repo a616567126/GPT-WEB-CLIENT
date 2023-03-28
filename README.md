@@ -80,7 +80,7 @@ App running at:
  
 ## 记得点一个Star哦!!!!
 
---
+
 [![Star History Chart](https://api.star-history.com/svg?repos=a616567126/GPT-WEB-CLIENT&type=Timeline)](https://star-history.com/#a616567126/GPT-WEB-CLIENT&Timeline)
 
 ## License
