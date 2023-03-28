@@ -50,8 +50,17 @@ App running at:
  
 ## Express gratitude
  
- **后端地址 [a616567126](https://github.com/a616567126/GPT-WEB-JAVA) 基于JDK17 可以的话点个Star**
+ **后端地址 [a616567126](https://github.com/a616567126/GPT-WEB-JAVA) 基于JDK17 可以的话点个Star**  
  
+ 
+ 
+ # #Demo Video 
+ * **web网页**
+ * https://www.bilibili.com/video/BV1PL411S7K8/?vd_source=7b7b2354d85595eb1e7b5fa8e43126a1
+ * **手机**
+ * https://www.bilibili.com/video/BV1Tc411j7Jt/?vd_source=7b7b2354d85595eb1e7b5fa8e43126a1
+
+
  
  ## Contributors
 
