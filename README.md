@@ -10,7 +10,7 @@
  
 **基于Vue2.0的GPTweb客户端**
 
-**Demo地址：http://gptai.v-wim.xyz**   
+**Demo地址：https://gptai.v-wim.xyz**   
  
 ## Getting Started  
 
