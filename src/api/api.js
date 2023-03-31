@@ -1,16 +1,14 @@
 /*
+export const baseUrl = 'https://gpt.v-wim.xyzs'
  * @Description:: 请补充填写
  * @Version: 1.0
  * @Author: 小白
  * @Date: 2022-04-25 15:58:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-03-28 14:50:28
+ * @LastEditTime: 2023-03-31 09:56:23
  * @FilePath: /chat_gpt/src/api/api.js
  */
-// export const baseUrl = 'http://192.168.70.205:9998'
 export const baseUrl = 'http://localhost:8000'
-// export const baseUrl = 'http://sj7m4f.natappfree.cc'
-//
 export const HTTP_URI = {
   BASEURL: baseUrl,
   REGISTER: baseUrl + '/user/token/register',

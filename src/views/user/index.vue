@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-03-28 13:53:38
+ * @LastEditTime: 2023-03-31 09:23:25
  * @FilePath: /chat_gpt/src/views/user/index.vue
 -->
 <template>
@@ -103,6 +103,7 @@ export default {
   methods: {
     getData() {
       this.$https('USERHOME', {}).then(res => {
+        console.log(res)
         // window.localStorage.setItem('data', JSON.stringify(res.data))
         // this.list = [{ name: res.data.content }]
         this.notice = res.data.content
@@ -115,6 +116,14 @@ export default {
         if (this.chatList.length > 0) {
           this.chatLists = this.chatList[0].chatLists
           this.title = this.chatLists[0].content
+        } else {
+          const obj = {
+            disabled: true,
+            name: 'New Chat',
+            chatLists: []
+          }
+          this.chatList.push(obj)
+          this.chatLists = this.chatList[0].chatLists
         }
         this.kitList = res.data.kitList
         this.userInfo = {

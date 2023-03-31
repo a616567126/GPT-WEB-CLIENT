@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-24 14:28:40
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-03-25 20:00:15
+ * @LastEditTime: 2023-03-31 09:26:44
  * @FilePath: /chat_gpt/src/views/user/components/content.vue
 -->
 <template>
@@ -22,13 +22,20 @@
         </div>
         <div v-if="!phone"
           class="chat_box">
-          <span
+          <!-- <span
             v-if="index < chatListes.length - 1">
             {{ item.content }}
-          </span>
-          <span v-else>
+          </span> -->
+          <div
+            v-if="index < chatListes.length - 1"
+            v-html="item.content">
+          </div>
+          <div v-else
+            v-html="obj.output">
+          </div>
+          <!-- <span v-else>
             {{ obj.output }}
-          </span>
+          </span> -->
         </div>
         <div v-else
           class="chat_box phone">
@@ -36,9 +43,8 @@
             v-if="index < chatListes.length - 1">
             {{ item.content }}
           </span>
-          <span v-else>
-            {{ obj.output }}
-          </span>
+          <span
+            v-else>{{ obj.output }}</span>
         </div>
       </div>
       <div

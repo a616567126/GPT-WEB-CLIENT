@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-24 14:30:48
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-03-28 13:54:58
+ * @LastEditTime: 2023-03-31 09:50:26
  * @FilePath: /chat_gpt/src/views/user/components/send.vue
 -->
 <template>
@@ -58,7 +58,9 @@ export default {
       this.$https('REPEST', {
         logId: window.localStorage.getItem('logId'),
         newMessages: window.localStorage.getItem('newMessages')
-      }).then(res => {})
+      }).then(res => {
+        this.$emit('ok')
+      })
     }
   },
   mounted() {
@@ -108,6 +110,10 @@ export default {
               setTimeout(() => {
                 window.localStorage.setItem('logId', res.data.logId)
                 window.localStorage.setItem('newMessages', JSON.stringify(this.chatListss))
+                this.$https('ADD', {
+                  logId: res.data.logId,
+                  newMessages: window.localStorage.setItem('newMessages', JSON.stringify(this.chatListss))
+                }).then(res => {})
               }, 500)
             } else {
               const objs = {

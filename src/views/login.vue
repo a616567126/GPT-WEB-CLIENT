@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-21 21:29:37
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-03-28 13:23:40
+ * @LastEditTime: 2023-03-28 19:49:38
  * @FilePath: /chat_gpt/src/views/login.vue
 -->
 <template>
@@ -24,6 +24,7 @@
       <el-card class="forms"
         v-if="showPage"
         shadow="never">
+
         <el-form :model="form"
           :rules="rules"
           ref="ruleForm"
@@ -64,7 +65,13 @@
       <el-card class="forms"
         shadow="never"
         v-if="!showPage">
-        <el-form
+        <img
+          :src="require('../assets/erweima.jpg')"
+          style="width: 310px;">
+        <div
+          style="text-align:center">
+          加群获取账号</div>
+        <!-- <el-form
           :model="regform"
           :rules="regrules"
           ref="regform"
@@ -96,7 +103,7 @@
                 class="el-input__icon el-icon-view"></i>
             </el-input>
           </el-form-item>
-          <!-- <el-form-item
+          <el-form-item
             prop="msgCode">
             <el-input
               prefix-icon="el-icon-folder-checked"
@@ -108,16 +115,16 @@
                 :disabled="disabled"
                 type="primary">{{ codeText }}</el-button>
             </el-input>
-          </el-form-item> -->
-          <el-form-item
-            style="margin-bottom: 0;">
-            <el-button
-              type="primary"
-              @click="reglogin"
-              style="width:100%">
-              注册</el-button>
           </el-form-item>
-        </el-form>
+        <el-form-item
+          style="margin-bottom: 0;">
+          <el-button
+            type="primary"
+            @click="reglogin"
+            style="width:100%">
+            注册</el-button>
+        </el-form-item>
+        </el-form> -->
       </el-card>
       <el-button
         v-if="showPage"
@@ -177,7 +184,6 @@ export default {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
           this.$https('LOGIN', this.form).then(res => {
-            console.log(res)
             window.localStorage.setItem('userInfo', JSON.stringify(res.data))
             window.localStorage.setItem('token', res.data.token)
             this.$message.success('登录成功！')
@@ -190,60 +196,44 @@ export default {
               this.$router.push('/')
             }, 2000)
           })
-
-          // window.localStorage.setItem('userInfo', JSON.stringify(this.form))
-          // window.localStorage.setItem('token', '1111111111')
-          // this.$message.success('登录成功！')
-          // if (this._isMobile()) {
-          //   window.localStorage.setItem('phone', true)
-          // } else {
-          //   window.localStorage.setItem('phone', false)
-          // }
-          // setTimeout(() => {
-          //   if (this.form.mobile !== 'admin') {
-          //     this.$router.push('/user/index')
-          //   } else {
-          //     this.$router.push('/admin/index')
-          //   }
-          // }, 2000)
         }
       })
     },
-    reglogin() {
-      this.$refs.regform.validate(valid => {
-        if (valid) {
-          this.$https('REGISTER', this.regform).then(res => {
-            if (res.status == 200) {
-              this.$message.success('注册成功！')
-              this.showPage = !this.showPage
-            } else {
-              this.$message.error(res.msg)
-            }
-          })
-        }
-      })
-    },
+    // reglogin() {
+    //   this.$refs.regform.validate(valid => {
+    //     if (valid) {
+    //       this.$https('REGISTER', this.regform).then(res => {
+    //         if (res.status == 200) {
+    //           this.$message.success('注册成功！')
+    //           this.showPage = !this.showPage
+    //         } else {
+    //           this.$message.error(res.msg)
+    //         }
+    //       })
+    //     }
+    //   })
+    // },
     reg() {
       this.showPage = !this.showPage
     },
-    getCode() {
-      const TIME_COUNT = 10
-      if (!this.timer) {
-        this.time = TIME_COUNT
-        this.disabled = true
-        this.timer = setInterval(() => {
-          if (this.time > 0 && this.time <= TIME_COUNT) {
-            this.time--
-            this.codeText = this.time + 's后获取'
-          } else {
-            this.disabled = false
-            this.codeText = '获取验证码'
-            clearInterval(this.timer)
-            this.timer = null
-          }
-        }, 1000)
-      }
-    },
+    // getCode() {
+    //   const TIME_COUNT = 10
+    //   if (!this.timer) {
+    //     this.time = TIME_COUNT
+    //     this.disabled = true
+    //     this.timer = setInterval(() => {
+    //       if (this.time > 0 && this.time <= TIME_COUNT) {
+    //         this.time--
+    //         this.codeText = this.time + 's后获取'
+    //       } else {
+    //         this.disabled = false
+    //         this.codeText = '获取验证码'
+    //         clearInterval(this.timer)
+    //         this.timer = null
+    //       }
+    //     }, 1000)
+    //   }
+    // },
     _isMobile() {
       let flag = navigator.userAgent.match(
         /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
