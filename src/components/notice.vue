@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 21:02:46
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-03-26 17:27:13
+ * @LastEditTime: 2023-03-31 09:54:14
  * @FilePath: /chat_gpt/src/components/notice.vue
 -->
 <template>
@@ -73,7 +73,7 @@ export default {
       transform: translateX(0);
     }
     100% {
-      transform: translateX(-1920px);
+      transform: translateX(-2500px);
     }
   }
 }
