@@ -99,4 +99,4 @@ App running at:
 
 ## License
 
-AGPL-3.0 License
+Apache License 2.0
