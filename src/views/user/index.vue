@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-04 14:17:34
+ * @LastEditTime: 2023-04-04 16:19:31
  * @FilePath: /chat_gpt/src/views/user/index.vue
 -->
 <template>
@@ -124,6 +124,7 @@ export default {
   watch: {
     chatLists: {
       handler(val) {
+        console.log(val, '000')
         this.scrollToBottom()
       },
       deep: true

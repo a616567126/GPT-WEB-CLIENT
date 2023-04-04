@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-24 14:28:40
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-04 13:44:53
+ * @LastEditTime: 2023-04-04 17:28:45
  * @FilePath: /chat_gpt/src/views/user/components/content.vue
 -->
 <template>
@@ -30,7 +30,7 @@
           <div v-else
             class="markdown-body"
             v-highlight
-            v-html="item.content">
+            v-html="obj.output">
           </div>
         </div>
         <div v-else
@@ -43,7 +43,7 @@
           <div v-else
             class="markdown-body"
             v-highlight
-            v-html="item.content">
+            v-html="obj.output">
           </div>
         </div>
       </div>
@@ -100,18 +100,21 @@ export default {
   watch: {
     chatLists: {
       handler(val) {
-        this.chatListes = val
-        if (val.length > 0) {
-          if (val[val.length - 1].role == 'assistant') {
-            if (this.mdRegex.test(val[val.length - 1].content)) {
-              this.initTyped(marked(val[val.length - 1].content))
-            } else {
-              this.initTyped(val[val.length - 1].content)
+        console.log(val, '0000')
+        if (val && val.length > 0) {
+          this.chatListes = val
+          if (val.length > 0) {
+            if (val[val.length - 1].role == 'assistant') {
+              if (this.mdRegex.test(val[val.length - 1].content)) {
+                this.initTyped(marked(val[val.length - 1].content))
+              } else {
+                this.initTyped(val[val.length - 1].content)
+              }
             }
-          }
-          for (var i = 0; i < val.length; i++) {
-            if (this.mdRegex.test(val[i].content)) {
-              val[i].content = marked(val[i].content)
+            for (var i = 0; i < val.length; i++) {
+              if (this.mdRegex.test(val[i].content)) {
+                val[i].content = marked(val[i].content)
+              }
             }
           }
         }
@@ -131,7 +134,7 @@ export default {
           this.initTyped(this.chatListes[this.chatListes.length - 1].content)
         }
       }
-      for (var j = 0; j < val.length; j++) {
+      for (var j = 0; j < this.chatListes.length; j++) {
         if (this.mdRegex.test(this.chatListes[j].content)) {
           this.chatListes[j].content = marked(this.chatListes[j].content)
         }
