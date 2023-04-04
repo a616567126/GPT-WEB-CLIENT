@@ -98,3 +98,67 @@
 .el-dialog{
   border-radius: 8px!important;
 }
+
+
+
+.article {
+  width: 1200px;
+  margin: 30px auto;
+  overflow: hidden;
+}
+
+/* markdown 行号的样式 */
+#content li {
+  list-style: decimal;
+}
+
+.article-con div pre {
+  position: relative;
+  padding: 0 29px;
+  overflow: hidden;
+  font-size: 90%;
+  line-height: 1.9;
+  background: #282c34;
+}
+
+.article-con div pre code {
+  padding: 0.4em;
+}
+
+.article-con div .pre-numbering {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 29px;
+  padding: 9px 7px 12px 0;
+  border-right: 1px solid #C3CCD0;
+  background: #282c34;
+  text-align: right;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.pre-numbering li{
+  list-style:none;
+  font-family: Menlo, monospace;
+  color: #abb2bf;
+}
+@media only screen 
+    and (min-width: 320px) 
+    and (max-width: 640px){
+      .contents{
+        padding: 0;
+        height: calc(100vh - 60px);
+      }
+      .contents .body{
+        border: 0px solid #e6e6e6;
+        border-radius: 10px;
+        overflow: hidden;
+        width: 100vw!important;
+        height: calc(100vh - 60px)!important;
+        position: relative;
+      }
+      .contents .right{
+        height: calc(100vh - 180px)!important;
+      }
+    }

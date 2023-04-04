@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-23 20:34:36
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-03-28 13:54:50
+ * @LastEditTime: 2023-04-04 08:53:31
  * @FilePath: /chat_gpt/src/views/user/components/menu.vue
 -->
 <template>
@@ -163,6 +163,7 @@ export default {
     },
 
     openWindow(item, index) {
+      console.log(item, '000')
       this.isActive = index
       this.chatLists = item.chatLists
       this.$emit('changeChat', { data: item, show: false })
@@ -172,6 +173,10 @@ export default {
     },
     payPage() {
       this.$store.commit('SET_OPEN', false)
+      this.$https('REPEST', {
+        logId: window.localStorage.getItem('logId'),
+        newMessages: window.localStorage.getItem('newMessages')
+      }).then(res => {})
       this.$router.push('/user/product')
     }
   }

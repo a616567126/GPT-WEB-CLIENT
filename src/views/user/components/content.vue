@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-24 14:28:40
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-03-31 09:26:44
+ * @LastEditTime: 2023-04-04 13:44:53
  * @FilePath: /chat_gpt/src/views/user/components/content.vue
 -->
 <template>
@@ -21,30 +21,30 @@
             style="width:40px;height:40px">
         </div>
         <div v-if="!phone"
-          class="chat_box">
-          <!-- <span
-            v-if="index < chatListes.length - 1">
-            {{ item.content }}
-          </span> -->
-          <div
+          class="chat_box ">
+          <div v-highlight
+            class="markdown-body"
+            v-if="index < chatListes.length - 1 "
+            v-html="item.content">
+          </div>
+          <div v-else
+            class="markdown-body"
+            v-highlight
+            v-html="item.content">
+          </div>
+        </div>
+        <div v-else
+          class="chat_box phone">
+          <div v-highlight
+            class="markdown-body"
             v-if="index < chatListes.length - 1"
             v-html="item.content">
           </div>
           <div v-else
-            v-html="obj.output">
+            class="markdown-body"
+            v-highlight
+            v-html="item.content">
           </div>
-          <!-- <span v-else>
-            {{ obj.output }}
-          </span> -->
-        </div>
-        <div v-else
-          class="chat_box phone">
-          <span
-            v-if="index < chatListes.length - 1">
-            {{ item.content }}
-          </span>
-          <span
-            v-else>{{ obj.output }}</span>
         </div>
       </div>
       <div
@@ -70,12 +70,18 @@
 
 <script>
 import EasyTyper from 'easy-typer-js'
+// 将marked 引入
+import { marked } from 'marked'
+// 引入代码高亮样式
+import 'highlight.js/styles/devibeans.css'
+
 export default {
   props: ['chatLists'],
   data() {
     return {
       phone: false,
       typewriter: '',
+      mdRegex: '',
       i: 0,
       timer: 0,
       chatListes: [],
@@ -97,7 +103,16 @@ export default {
         this.chatListes = val
         if (val.length > 0) {
           if (val[val.length - 1].role == 'assistant') {
-            this.initTyped(val[val.length - 1].content)
+            if (this.mdRegex.test(val[val.length - 1].content)) {
+              this.initTyped(marked(val[val.length - 1].content))
+            } else {
+              this.initTyped(val[val.length - 1].content)
+            }
+          }
+          for (var i = 0; i < val.length; i++) {
+            if (this.mdRegex.test(val[i].content)) {
+              val[i].content = marked(val[i].content)
+            }
           }
         }
       },
@@ -105,11 +120,21 @@ export default {
     }
   },
   mounted() {
+    this.mdRegex = /[#*`|.png]/
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
     this.chatListes = this.chatLists
     if (this.chatListes && this.chatListes.length > 0) {
       if (this.chatListes[this.chatListes.length - 1].role == 'assistant') {
-        this.initTyped(this.chatListes[this.chatListes.length - 1].content)
+        if (this.mdRegex.test(this.chatListes[this.chatListes.length - 1].content)) {
+          this.initTyped(marked(this.chatListes[this.chatListes.length - 1].content))
+        } else {
+          this.initTyped(this.chatListes[this.chatListes.length - 1].content)
+        }
+      }
+      for (var j = 0; j < val.length; j++) {
+        if (this.mdRegex.test(this.chatListes[j].content)) {
+          this.chatListes[j].content = marked(this.chatListes[j].content)
+        }
       }
     }
   },

@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-03-31 09:23:25
+ * @LastEditTime: 2023-04-04 14:17:34
  * @FilePath: /chat_gpt/src/views/user/index.vue
 -->
 <template>
@@ -27,14 +27,40 @@
         </div>
         <div class="right">
           <Content
+            v-if="isActive == 0"
             :chatLists="chatLists">
           </Content>
+          <ContentPic
+            :chatListses="chatListses"
+            v-if="isActive == 1">
+          </ContentPic>
         </div>
       </div>
-      <SendText @ok="getData"
-        @total="total"
-        :chatLists="chatLists">
-      </SendText>
+      <div>
+        <div class="tool">
+          <img
+            @click="changeChats(0)"
+            :class="{'active':isActive == 0}"
+            src="../../assets/chat_icon.png"
+            class="icon">
+          <img
+            @click="changeChats(1)"
+            :class="{'active':isActive == 1}"
+            src="../../assets/picture.png"
+            class="icon">
+        </div>
+        <SendText
+          v-if="isActive == 0"
+          @ok="getData"
+          @total="total"
+          :chatLists="chatLists">
+        </SendText>
+        <SendPic @ok="getData"
+          v-if="isActive == 1"
+          @total="total"
+          @chatListss="chatListss">
+        </SendPic>
+      </div>
     </div>
     <el-drawer
       :append-to-body="true"
@@ -63,10 +89,12 @@ import Notice from '@/components/notice.vue'
 import Menu from './components/menu.vue'
 import NoticeModal from './components/noticeModal.vue'
 import Content from './components/content.vue'
+import ContentPic from './components/content_pic.vue'
 import SendText from './components/send.vue'
+import SendPic from './components/sendPic.vue'
 export default {
   name: 'marquee',
-  components: { Notice, Menu, NoticeModal, Content, SendText },
+  components: { Notice, Menu, ContentPic, SendPic, NoticeModal, Content, SendText },
   data() {
     return {
       list: [],
@@ -78,6 +106,7 @@ export default {
       userInfo: {},
       chatLists: [],
       kitList: [],
+      chatListses: [],
       direction: 'ltr',
       chatList: [],
       oldScrollTop: 0,
@@ -101,11 +130,30 @@ export default {
     }
   },
   methods: {
+    chatListss(data) {
+      this.chatListses = data
+    },
+    changeChats(e) {
+      if (e == 1) {
+        this.$confirm('画图记录不做保存', '提示', {
+          confirmButtonText: '继续',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.isActive = e
+          this.chatListses = [
+            {
+              content: '',
+              role: 'user'
+            }
+          ]
+        })
+      } else {
+        this.isActive = e
+      }
+    },
     getData() {
       this.$https('USERHOME', {}).then(res => {
-        console.log(res)
-        // window.localStorage.setItem('data', JSON.stringify(res.data))
-        // this.list = [{ name: res.data.content }]
         this.notice = res.data.content
         this.chatList = res.data.logList
         this.chatList.map(item => {
@@ -149,6 +197,10 @@ export default {
       this.title = data[0].name
     },
     open() {
+      this.$https('REPEST', {
+        logId: window.localStorage.getItem('logId'),
+        newMessages: window.localStorage.getItem('newMessages')
+      }).then(res => {})
       this.$router.push('/user/notice')
     },
     scrollToBottom() {
@@ -174,7 +226,7 @@ export default {
       this.totals = data
     },
     changeChat(data) {
-      this.title = data.data.chatLists[0].content
+      this.title = data.data.name
       this.chatLists = data.data.chatLists
       this.drawer = data.show
       this.$store.commit('SET_OPEN', data.show)
@@ -200,7 +252,7 @@ export default {
         height: calc(100vh - 120px);
       }
       .right {
-        height: calc(100vh - 200px);
+        height: calc(100vh - 240px);
         overflow-y: auto;
         width: 100%;
         position: relative;
@@ -238,6 +290,27 @@ export default {
         }
       }
     }
+  }
+}
+.tool {
+  display: flex;
+  height: 40px;
+  background: #ffffff;
+  align-items: center;
+  position: absolute;
+  bottom: 70px;
+  left: 280px;
+  width: calc(100% - 290px);
+  padding-left: 20px;
+  .icon {
+    width: 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    filter: grayscale(100%);
+  }
+  .icon:hover,
+  .icon.active {
+    filter: grayscale(0);
   }
 }
 .input_box {

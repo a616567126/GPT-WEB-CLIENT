@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-21 21:29:37
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-03-28 19:49:38
+ * @LastEditTime: 2023-04-04 15:52:23
  * @FilePath: /chat_gpt/src/views/login.vue
 -->
 <template>
@@ -70,7 +70,7 @@
           style="width: 310px;">
         <div
           style="text-align:center">
-          加群获取账号</div>
+          关注公众号开通账号</div>
         <!-- <el-form
           :model="regform"
           :rules="regrules"
