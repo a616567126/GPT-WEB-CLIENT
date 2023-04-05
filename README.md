@@ -49,6 +49,8 @@
 
 **3.npm run dev**  
 
+**出现443 类似这种异常可配置代理：npm config set registry https://registry.npm.taobao.org**
+
        
 ## Running the tests
  
