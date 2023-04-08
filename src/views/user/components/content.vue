@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-24 14:28:40
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-04 17:28:45
+ * @LastEditTime: 2023-04-06 17:03:53
  * @FilePath: /chat_gpt/src/views/user/components/content.vue
 -->
 <template>
@@ -45,18 +45,19 @@
             v-highlight
             v-html="obj.output">
           </div>
+
         </div>
       </div>
       <div
         v-if="item.role == 'user' && item.content"
         class="items items_right">
         <div v-if="!phone"
-          class="chat_box">
-          {{ item.content }}
+          class="chat_box"
+          v-html="item.content">
         </div>
         <div v-else
-          class="chat_box phone">
-          {{ item.content }}
+          class="chat_box phone"
+          v-html="item.content">
         </div>
         <div class="tx">
           <img
@@ -74,7 +75,6 @@ import EasyTyper from 'easy-typer-js'
 import { marked } from 'marked'
 // 引入代码高亮样式
 import 'highlight.js/styles/devibeans.css'
-
 export default {
   props: ['chatLists'],
   data() {
@@ -100,21 +100,18 @@ export default {
   watch: {
     chatLists: {
       handler(val) {
-        console.log(val, '0000')
-        if (val && val.length > 0) {
-          this.chatListes = val
-          if (val.length > 0) {
-            if (val[val.length - 1].role == 'assistant') {
-              if (this.mdRegex.test(val[val.length - 1].content)) {
-                this.initTyped(marked(val[val.length - 1].content))
-              } else {
-                this.initTyped(val[val.length - 1].content)
-              }
+        this.chatListes = val
+        if (val.length > 0) {
+          if (val[val.length - 1].role == 'assistant') {
+            if (this.mdRegex.test(val[val.length - 1].content)) {
+              this.initTyped(marked(val[val.length - 1].content))
+            } else {
+              this.initTyped(val[val.length - 1].content)
             }
-            for (var i = 0; i < val.length; i++) {
-              if (this.mdRegex.test(val[i].content)) {
-                val[i].content = marked(val[i].content)
-              }
+          }
+          for (var i = 0; i < val.length; i++) {
+            if (this.mdRegex.test(val[i].content)) {
+              val[i].content = marked(val[i].content)
             }
           }
         }
@@ -137,6 +134,7 @@ export default {
       for (var j = 0; j < this.chatListes.length; j++) {
         if (this.mdRegex.test(this.chatListes[j].content)) {
           this.chatListes[j].content = marked(this.chatListes[j].content)
+          // this.chatListes[j].content = js_beautify(this.chatListes[j].content)
         }
       }
     }

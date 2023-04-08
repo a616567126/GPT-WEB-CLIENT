@@ -4,14 +4,14 @@
  * @Author: smallWhite
  * @Date: 2023-03-25 15:16:43
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-03-28 13:39:44
+ * @LastEditTime: 2023-04-06 14:49:41
  * @FilePath: /chat_gpt/src/layout/mainUser.vue
 -->
 <template>
   <div class="content">
     <div class="header">
       <div class="icon"
-        v-if="phone && $route.path == '/'">
+        v-if="phone && ($route.path == '/' || $route.path == '/scoket' )">
         <i style="font-size: 20px;color:#999999"
           class="el-icon-s-fold"
           @click="toggle"></i>

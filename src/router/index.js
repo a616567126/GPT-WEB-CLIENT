@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-03-28 13:56:54
+ * @LastEditTime: 2023-04-06 16:43:38
  * @FilePath: /chat_gpt/src/router/index.js
  */
 import Vue from 'vue'
@@ -32,6 +32,16 @@ export const routes = [
         },
         path: '/',
         name: 'home',
+        component: () => import('../views/scoket/index.vue')
+      },
+      {
+        name: '即时聊天',
+        meta: {
+          icon: 'el-icon-s-home',
+          title: '即时聊天'
+        },
+        path: '/scoket',
+        name: 'scoket',
         component: () => import('../views/user/index.vue')
       },
       {
@@ -57,8 +67,8 @@ export const routes = [
 ]
 
 const router = new VueRouter({
-  // mode: 'hash',
-  mode: 'history',
+  mode: 'hash',
+  // mode: 'history',
   base: process.env.BASE_URL,
   routes
 })

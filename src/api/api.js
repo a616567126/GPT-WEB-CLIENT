@@ -5,10 +5,12 @@ export const baseUrl = 'https://gpt.v-wim.xyz-a-s'
  * @Author: 小白
  * @Date: 2022-04-25 15:58:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-04 17:29:17
+ * @LastEditTime: 2023-04-06 14:23:08
  * @FilePath: /chat_gpt/src/api/api.js
  */
 export const baseUrl = 'https://gpt.v-wim.xyz'
+export const wsUrl = 'wss://gpt.v-wim.xyz'
+
 // export const baseUrl = 'http://ee9qu3.natappfree.cc'
 export const HTTP_URI = {
   BASEURL: baseUrl,

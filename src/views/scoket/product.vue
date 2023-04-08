@@ -15,7 +15,7 @@
             :style="{'background':item.type == 0 ?'rgba(255,0,0,.05)':(item.type == 1?'rgba(0,255,0,.05)':'rgba(255,168,0,.05)')}">
             <div
               class="item name"
-              :style="{'background-color':item.type == 0 ?'rgba(255,0,0,.8)':(item.type == 1?'rgba(0,255,0,.8)':'rgba(255,168,0,.8)'),'font-size':'12px'}">
+              :style="{'background-color':item.type == 0 ?'rgba(255,0,0,.8)':(item.type == 1?'rgba(0,255,0,.8)':'rgba(255,168,0,.8)'),fontSize:'12px'}">
               {{ item.name }}(剩余:
               {{  item.stock}})
             </div>
@@ -368,6 +368,7 @@ export default {
       display: inline-block;
       text-align: center;
       color: #fff;
+      font-size: 12px !important;
       border-radius: 0 0 0 5px;
     }
     .item.price {

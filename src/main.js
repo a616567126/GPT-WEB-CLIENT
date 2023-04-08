@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-03-31 14:07:07
+ * @LastEditTime: 2023-04-06 14:23:03
  * @FilePath: /chat_gpt/src/main.js
  */
 import Vue from 'vue'
@@ -17,7 +17,9 @@ import '@/assets/css/style.scss'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import { REQUEST } from '@/api/http'
+import { wsUrl } from '@/api/api'
 Vue.config.productionTip = false
+Vue.prototype.wsUrl = wsUrl
 Vue.prototype.$https = REQUEST.POST
 Vue.use(ElementUI)
 Vue.use(hljs)

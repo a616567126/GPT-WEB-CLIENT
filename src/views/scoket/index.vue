@@ -4,11 +4,12 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-07 07:46:28
- * @FilePath: /chat_gpt/src/views/user/index.vue
+ * @LastEditTime: 2023-04-07 08:04:33
+ * @FilePath: /chat_gpt/src/views/scoket/index.vue
 -->
 <template>
-  <div class="contents">
+  <div class="contents"
+    v-loading="loading">
     <div class="body">
       <Notice :notice="notice"
         @open="open">
@@ -21,20 +22,17 @@
             :total="totals"
             @changeChat="changeChat"
             :kit-list="kitList"
-            :chat-list="chatList"
+            :chat-list="chatLists"
             :user-info="userInfo">
           </Menu>
         </div>
         <div
           class="chat_right">
           <Content
-            v-if="isActive == 0"
-            :chatLists="chatLists">
+            :isChat="isChat"
+            :isChats="isChats"
+            :chatList="chatLists">
           </Content>
-          <ContentPic
-            :chatListses="chatListses"
-            v-if="isActive == 1">
-          </ContentPic>
         </div>
       </div>
       <div>
@@ -46,8 +44,7 @@
             content="正常通讯"
             placement="top-start">
             <img
-              @click="changeChats(0)"
-              :class="{'active':isActive == 0}"
+              @click="changeChats(1)"
               src="../../assets/chat_icon.png"
               class="icon">
           </el-tooltip>
@@ -57,20 +54,8 @@
             content="画图"
             placement="top-start">
             <img
-              @click="changeChats(1)"
-              :class="{'active':isActive == 1}"
+              @click="changeChats(3)"
               src="../../assets/picture.png"
-              class="icon">
-          </el-tooltip>
-          <el-tooltip
-            class="item"
-            effect="dark"
-            content="即时通讯"
-            placement="top-start">
-            <img
-              @click="changeChats(2)"
-              :class="{'active':isActive == 2}"
-              src="../../assets/chats_icon.png"
               class="icon">
           </el-tooltip>
           <el-tooltip
@@ -79,22 +64,26 @@
             content="充值"
             placement="top-start">
             <img
-              @click="changeChats(3)"
+              @click="changeChats(2)"
               src="../../assets/pay_2.png"
               class="icon">
           </el-tooltip>
+          <span
+            style="right: 30px;position: absolute;"
+            :style="{color:color}">
+            <i v-if="color == 'green'"
+              class="el-icon-circle-check"
+              style="margin-right:5px;font-size: 14px;"></i>
+            <i v-if="color == 'red'"
+              class="el-icon-circle-close"
+              style="margin-right:5px;font-size: 14px;"></i>
+            {{ scoketText }}</span>
         </div>
         <SendText
-          v-if="isActive == 0"
+          @sendText="sendTexts"
           @ok="getData"
-          @total="total"
-          :chatLists="chatLists">
+          @total="total">
         </SendText>
-        <SendPic @ok="getData"
-          v-if="isActive == 1"
-          @total="total"
-          @chatListss="chatListss">
-        </SendPic>
       </div>
     </div>
     <el-drawer
@@ -116,123 +105,162 @@
     </el-drawer>
     <NoticeModal ref="notice">
     </NoticeModal>
-    <div class="pay_icons">
-      <img
-        :src="require('@/assets/pay_2.png')"
-        style="width:25px;height:25px;">
-    </div>
   </div>
 </template>
 
 <script>
+import { marked } from 'marked'
 import Notice from '@/components/notice.vue'
 import Menu from './components/menu.vue'
 import NoticeModal from './components/noticeModal.vue'
 import Content from './components/content.vue'
-import ContentPic from './components/content_pic.vue'
 import SendText from './components/send.vue'
-import SendPic from './components/sendPic.vue'
 export default {
   name: 'marquee',
-  components: { Notice, Menu, ContentPic, SendPic, NoticeModal, Content, SendText },
+  components: { Notice, Menu, NoticeModal, Content, SendText },
   data() {
     return {
-      cmOptions: {
-        tabSize: 2,
-        mode: 'text/javascript',
-        theme: 'base16-light', // 主题
-        lineNumbers: true,
-        line: true
-      },
       list: [],
       totals: 0,
       dialogVisibles: false,
       sendText: '',
+      color: '',
+      scoketText: '',
       title: 'New Chat',
-      isActive: 0,
       userInfo: {},
-      chatLists: [],
       kitList: [],
-      chatListses: [],
+      scrollFlag: false,
+      loading: false,
+      isChat: 0,
+      isChats: 0,
       direction: 'ltr',
       chatList: [],
+      chatLists: [],
       oldScrollTop: 0,
       phone: false,
-      notice: ''
+      notice: '',
+      arr: [],
+      mdRegex: ''
     }
   },
   created() {},
 
   mounted() {
+    this.mdRegex = /[#*`|]/
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
-    console.log(this.phone, '000')
     document.querySelector('.box').addEventListener('scroll', this.scrolling)
-    if (this.$route.query && this.$route.query.id) {
-      console.log(122)
-      this.isActive = 1
-    } else {
-      this.isActive = 0
-    }
     this.getData()
+    this.initWebSocket()
   },
   watch: {
-    chatLists: {
+    chatList: {
       handler(val) {
-        console.log(val, '000')
+        this.chatLists = val
         this.scrollToBottom()
       },
       deep: true
+    },
+    arr: {
+      handler(val) {
+        this.loading = false
+        this.isChats = val.length
+        this.chatList[0].answer = ''
+        this.chatList[0].answer = val.join('')
+        if (this.mdRegex.test(this.chatList[0].answer)) {
+          this.chatList[0].answer = marked(this.chatList[0].answer)
+        }
+      }
     }
   },
   methods: {
-    chatListss(data) {
-      this.chatListses = data
+    // 发送websockwt请求
+    initWebSocket() {
+      let websocketUrl = this.wsUrl + '/chatWebSocket/' + JSON.parse(window.localStorage.getItem('userInfo')).userId
+      // WebSocket与普通的请求所用协议有所不同，ws等同于http，wss等同于https
+      this.webSock = new WebSocket(websocketUrl)
+      this.webSock.onopen = this.webSocketOnOpen
+      this.webSock.onerror = this.webSocketOnError
+      this.webSock.onmessage = this.webSocketOnMessage
+      this.webSock.onclose = this.webSocketClose
+    },
+    webSocketOnOpen() {
+      this.scoketText = '连接成功'
+      this.color = 'green'
+      //  传递参数  不需要传参就不传
+      // this.webSocketSend(this.id)
+    },
+    webSocketOnMessage(e) {
+      console.log(e.data)
+      //接收数据
+      // this.lists.push(jsonObj.message)
+      this.arr.push(e.data)
+    },
+    webSocketClose(e) {
+      this.scoketText = '断开连接'
+      this.color = 'red'
+      this.lockReconnect = false
+      this.reconnect()
+    },
+    webSocketOnError(e) {
+      this.$message.error('报错信息', e)
+    },
+    webSocketSend(Data) {
+      //发送数据发送
+      this.webSock.send(Data)
+    },
+    // 断开重连操作
+    reconnect() {
+      if (this.lockReconnect) return
+      this.lockReconnect = true
+      let _this = this
+      //没连接上会一直重连，设置延迟避免请求过多
+      setTimeout(function () {
+        _this.initWebSocket()
+        _this.lockReconnect = false
+        // _this.isOne = 1;
+      }, 2000)
+    },
+    sendTexts(data) {
+      this.arr = []
+      this.chatList.unshift(data)
+      // this.loading = true
+      this.webSocketSend(data.question)
     },
     changeChats(e) {
       if (e == 1) {
-        this.$confirm('画图记录不做保存', '提示', {
-          confirmButtonText: '继续',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.isActive = e
-          this.chatListses = [
-            {
-              content: '',
-              role: 'user'
-            }
-          ]
-        })
+        this.$router.push('/scoket')
       } else if (e == 2) {
-        this.$router.push('/')
-      } else if (e == 3) {
         this.$router.push('/user/product')
-      } else {
-        this.isActive = e
+      } else if (e == 3) {
+        this.$router.push({
+          path: '/scoket',
+          query: {
+            id: e
+          }
+        })
       }
     },
     getData() {
       this.$https('USERHOME', {
-        sendType: 0
+        sendType: 1
       }).then(res => {
         this.notice = res.data.content
         this.chatList = res.data.logList
-        this.chatList.map(item => {
-          this.$set(item, 'disabled', true)
-          this.$set(item, 'chatLists', JSON.parse(item.useValue))
-          this.$set(item, 'name', item.chatLists[0].content)
-        })
+
         if (this.chatList.length > 0) {
-          this.chatLists = this.chatList[0].chatLists
-          this.title = this.chatLists[0].content
+          this.title = this.chatList[0].question
+          this.chatList.map(item => {
+            if (this.mdRegex.test(item.answer)) {
+              item.answer = marked(item.answer)
+            }
+          })
         } else {
           const obj = {
             disabled: true,
-            name: 'New Chat',
-            chatLists: []
+            question: 'New Chat',
+            answer: ''
           }
           this.chatList.push(obj)
-          this.chatLists = this.chatList[0].chatLists
         }
         this.kitList = res.data.kitList
         this.userInfo = {
@@ -254,14 +282,9 @@ export default {
       this.$store.commit('SET_OPEN', data)
     },
     addList(data) {
-      this.chatLists = data[0].chatLists
-      this.title = data[0].name
+      this.chatList.unshift(data)
     },
     open() {
-      this.$https('REPEST', {
-        logId: window.localStorage.getItem('logId'),
-        newMessages: window.localStorage.getItem('newMessages')
-      }).then(res => {})
       this.$router.push('/user/notice')
     },
     scrollToBottom() {
@@ -287,9 +310,8 @@ export default {
       this.totals = data
     },
     changeChat(data) {
-      this.title = data.data.name
-      this.chatLists = data.data.chatLists
       this.drawer = data.show
+      this.isChat = data.data
       this.$store.commit('SET_OPEN', data.show)
     }
   }
