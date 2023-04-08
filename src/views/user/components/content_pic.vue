@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-24 14:28:40
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-04 13:56:57
+ * @LastEditTime: 2023-04-08 14:11:04
  * @FilePath: /chat_gpt/src/views/user/components/content_pic.vue
 -->
 <template>
@@ -13,7 +13,7 @@
       v-for="(item,index) in chatListPic"
       :key="index">
       <div
-        v-if="item.role == 'assistant'"
+        v-if="item.role == 'assistant' && item.content"
         class="items">
         <div class="tx">
           <img

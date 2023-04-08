@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-24 14:30:48
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-08 09:53:00
+ * @LastEditTime: 2023-04-08 14:08:35
  * @FilePath: /chat_gpt/src/views/user/components/send.vue
 -->
 <template>
@@ -77,15 +77,11 @@ export default {
     getTypes() {
       this.$https('getType', {}).then(res => {
         this.obj.type = res.data.type
-        if (res.type == 0) this.num = res.data.remainingTimes
-        else if (res.type == 1) this.num = res.data.dayRemainingTimes
+        if (res.type == 1) this.num = res.data.dayRemainingTimes
+        else this.num = res.data.remainingTimes
         setTimeout(() => {
-          if (this.chatListss.length == 0) {
+          if (this.num == 0) {
             this.disabled = true
-          } else if (this.num == 0) {
-            this.disabled = true
-          } else {
-            this.disabled = false
           }
         }, 500)
       })

@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-24 14:28:40
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-06 22:59:27
+ * @LastEditTime: 2023-04-08 14:10:26
  * @FilePath: /chat_gpt/src/views/scoket/components/content.vue
 -->
 <template>
@@ -28,7 +28,8 @@
             style="width:40px;height:40px">
         </div>
       </div>
-      <div class="items">
+      <div class="items"
+        v-if="chatObj.answer">
         <div class="tx">
           <img
             :src="require('@/assets/chat.png')"
@@ -39,7 +40,7 @@
           class="chat_box">
           <div v-highlight
             class="markdown-body"
-            v-html="chatObj.answer ">
+            v-html="chatObj.answer">
           </div>
         </div>
         <div v-else
