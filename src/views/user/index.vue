@@ -90,13 +90,16 @@ import Menu from './components/menu.vue'
 import NoticeModal from './components/noticeModal.vue'
 import Content from './components/content.vue'
 import ContentPic from './components/content_pic.vue'
-import SendText from './components/send.vue'
+// import SendText from './components/send.vue'
+import SendText from './components/sendbysocket.vue'
 import SendPic from './components/sendPic.vue'
+import WebSocketObj from '@/api/websock.js'
 export default {
   name: 'marquee',
   components: { Notice, Menu, ContentPic, SendPic, NoticeModal, Content, SendText },
   data() {
     return {
+      websock: null,
       list: [],
       totals: 0,
       dialogVisibles: false,
@@ -114,7 +117,10 @@ export default {
       notice: ''
     }
   },
-  created() {},
+  created() {
+   WebSocketObj.initWebSocket()
+   console.log(WebSocketObj.websock);
+  },
 
   mounted() {
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
