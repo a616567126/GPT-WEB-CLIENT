@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-24 14:30:48
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-08 14:08:17
+ * @LastEditTime: 2023-04-04 13:59:44
  * @FilePath: /chat_gpt/src/views/user/components/sendPic.vue
 -->
 <template>
@@ -36,7 +36,6 @@ export default {
       phone: false,
       sendText: '',
       type: '0',
-      num: 0,
       disabled: false,
       chatListss: []
     }
@@ -50,13 +49,6 @@ export default {
     getTypes() {
       this.$https('getType', {}).then(res => {
         this.type = res.data.type
-        if (res.type == 1) this.num = res.data.dayRemainingTimes
-        else this.num = res.data.remainingTimes
-        setTimeout(() => {
-          if (this.num == 0) {
-            this.disabled = true
-          }
-        }, 500)
       })
     },
     sendChat(e) {

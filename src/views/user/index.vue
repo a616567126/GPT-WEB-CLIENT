@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-08 10:58:35
+ * @LastEditTime: 2023-04-07 07:46:28
  * @FilePath: /chat_gpt/src/views/user/index.vue
 -->
 <template>
@@ -116,6 +116,11 @@
     </el-drawer>
     <NoticeModal ref="notice">
     </NoticeModal>
+    <div class="pay_icons">
+      <img
+        :src="require('@/assets/pay_2.png')"
+        style="width:25px;height:25px;">
+    </div>
   </div>
 </template>
 

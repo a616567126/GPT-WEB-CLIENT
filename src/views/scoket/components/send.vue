@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-24 14:30:48
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-08 14:07:21
+ * @LastEditTime: 2023-04-06 23:22:06
  * @FilePath: /chat_gpt/src/views/scoket/components/send.vue
 -->
 <template>
@@ -37,7 +37,6 @@ export default {
       sendText: '',
       obj: {},
       logId: '',
-      num: 0,
       disabled: false,
       messagesList: [],
       newMessageList: [],
@@ -71,13 +70,6 @@ export default {
     getTypes() {
       this.$https('getType', {}).then(res => {
         this.obj.type = res.data.type
-        if (res.type == 1) this.num = res.data.dayRemainingTimes
-        else this.num = res.data.remainingTimes
-        setTimeout(() => {
-          if (this.num == 0) {
-            this.disabled = true
-          }
-        }, 500)
       })
     },
     sendChat(e) {
