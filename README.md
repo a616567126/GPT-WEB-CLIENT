@@ -99,8 +99,7 @@ App running at:
 
 
 ## 加入微信群
-![image](https://user-images.githubusercontent.com/43660702/230708891-c669131d-923d-425a-9ad3-629670c19638.png)
-
+<img width="398" alt="image" src="https://user-images.githubusercontent.com/43660702/231703678-e3f6f99c-445c-4675-a768-05966efde1fe.png">
 
 
 ## 关注公众号
