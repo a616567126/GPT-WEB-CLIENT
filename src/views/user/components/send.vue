@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-24 14:30:48
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-03 16:51:26
+ * @LastEditTime: 2023-04-08 14:08:35
  * @FilePath: /chat_gpt/src/views/user/components/send.vue
 -->
 <template>
@@ -40,7 +40,8 @@ export default {
       disabled: false,
       messagesList: [],
       newMessageList: [],
-      chatListss: []
+      chatListss: [],
+      num: 0
     }
   },
   watch: {
@@ -50,6 +51,11 @@ export default {
         this.obj.messages = val
         window.localStorage.setItem('messages', JSON.stringify(val))
         this.disabled = false
+      }
+    },
+    num(val) {
+      if (val == 0) {
+        this.disabled = true
       }
     }
   },
@@ -65,22 +71,23 @@ export default {
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
     this.chatListss = this.chatLists
     window.localStorage.setItem('messages', JSON.stringify(this.chatListss))
-    if (this.chatListss.length == 0) {
-      this.disabled = true
-    } else {
-      this.disabled = false
-    }
     this.getTypes()
   },
   methods: {
     getTypes() {
       this.$https('getType', {}).then(res => {
         this.obj.type = res.data.type
+        if (res.type == 1) this.num = res.data.dayRemainingTimes
+        else this.num = res.data.remainingTimes
+        setTimeout(() => {
+          if (this.num == 0) {
+            this.disabled = true
+          }
+        }, 500)
       })
     },
     sendChat(e) {
       let num = this.$store.state.total
-      console.log(num, '0')
       this.obj.logId = ''
       if (window.localStorage.getItem('logId')) {
         this.obj.logId = window.localStorage.getItem('logId')
