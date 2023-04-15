@@ -5,7 +5,7 @@ export const baseUrl = 'https://gpt.v-wim.xyz-a-s'
  * @Author: 小白
  * @Date: 2022-04-25 15:58:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-06 14:23:08
+ * @LastEditTime: 2023-04-15 18:42:09
  * @FilePath: /chat_gpt/src/api/api.js
  */
 export const baseUrl = 'https://gpt.v-wim.xyz'
@@ -17,6 +17,7 @@ export const HTTP_URI = {
   REGISTER: baseUrl + '/user/token/register',
   LOGIN: baseUrl + '/user/token/login',
   PRODUCT: baseUrl + '/product/list',
+  ALIPAY: baseUrl + '/order/ali/create',
   USERHOME: baseUrl + '/user/token/home',
   CHAT: baseUrl + '/v1/chat/turbo',
   getType: baseUrl + '/user/token/getType',

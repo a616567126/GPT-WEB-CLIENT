@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-07 08:04:33
+ * @LastEditTime: 2023-04-14 08:51:49
  * @FilePath: /chat_gpt/src/views/scoket/index.vue
 -->
 <template>
@@ -38,6 +38,16 @@
       <div>
         <div class="tool"
           :class="{'phone':phone}">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="即时通讯"
+            placement="top-start">
+            <img
+              :class="{'active':isActive == 0}"
+              src="../../assets/chats_icon.png"
+              class="icon">
+          </el-tooltip>
           <el-tooltip
             class="item"
             effect="dark"
@@ -124,6 +134,7 @@ export default {
       totals: 0,
       dialogVisibles: false,
       sendText: '',
+      isActive: 0,
       color: '',
       scoketText: '',
       title: 'New Chat',
@@ -193,7 +204,12 @@ export default {
       console.log(e.data)
       //接收数据
       // this.lists.push(jsonObj.message)
-      this.arr.push(e.data)
+      if (e.data.includes('\n')) {
+        let str = `${e.data.replace(/\n/g, '<br/>')}`
+        this.arr.push(str)
+      } else {
+        this.arr.push(e.data)
+      }
     },
     webSocketClose(e) {
       this.scoketText = '断开连接'

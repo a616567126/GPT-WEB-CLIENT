@@ -116,16 +116,8 @@
           label="价格">
         </el-table-column>
         <el-table-column
+          prop="payType"
           label="支付方式">
-          <template
-            slot-scope="scope">
-            <span
-              v-if="scope.row.payType == 'alipay'">支付宝支付</span>
-            <span
-              v-else-if="scope.row.payType == 'wxpay'">微信支付</span>
-            <span
-              v-else-if="scope.row.payType == 'qqpay'">QQ钱包</span>
-          </template>
         </el-table-column>
         <el-table-column
           label="支付状态">
@@ -257,20 +249,27 @@
     <PayModal ref="showPay"
       @payType="payFun">
     </PayModal>
+    <AliPayModal
+      ref="showAliPay"
+      @AlipayType="AlipayType">
+    </AliPayModal>
 
   </div>
 </template>
 
 <script>
 import PayModal from './components/payModal.vue'
+import AliPayModal from './components/payModalAli.vue'
 export default {
-  components: { PayModal },
+  components: { PayModal, AliPayModal },
   data() {
     return {
       phone: false,
       url: '',
       list: [],
       form: {},
+      aliUrl: '',
+      payType: 0,
       tableData: []
     }
   },
@@ -282,9 +281,21 @@ export default {
     getData() {
       this.$https('PRODUCT', {}).then(res => {
         this.list = res.data.productList
+        this.payType = res.data.payType
         this.tableData = res.data.orderList
         window.localStorage.setItem('productList', JSON.stringify(res.data.productList))
         window.localStorage.setItem('orderList', JSON.stringify(res.data.orderList))
+      })
+    },
+    AlipayType(data) {
+      console.log(data, '0')
+      this.$message.success('正在发起支付...')
+      this.$https('ALIPAY', data).then(res => {
+        if (res.status == 200) {
+          document.write(res.data)
+        } else {
+          this.$message.warning(res.msg)
+        }
       })
     },
     payFun(data) {
@@ -319,7 +330,11 @@ export default {
         if (data.type == 2 && res.data.type !== 1) {
           this.$alert('只有月卡用户可以购买加油包', '提示')
         } else {
-          this.$refs.showPay.open(data)
+          if (this.payType == 0) {
+            this.$refs.showPay.open(data)
+          } else {
+            this.$refs.showAliPay.open(data)
+          }
         }
       })
     }
