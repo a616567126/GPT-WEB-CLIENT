@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-06 14:23:03
+ * @LastEditTime: 2023-04-16 20:40:50
  * @FilePath: /chat_gpt/src/main.js
  */
 import Vue from 'vue'
@@ -12,6 +12,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import hljs from 'highlight.js'
+import SlideVerify from 'vue-monoplasty-slide-verify'
 
 import '@/assets/css/style.scss'
 import ElementUI from 'element-ui'
@@ -21,6 +22,7 @@ import { wsUrl } from '@/api/api'
 Vue.config.productionTip = false
 Vue.prototype.wsUrl = wsUrl
 Vue.prototype.$https = REQUEST.POST
+Vue.use(SlideVerify)
 Vue.use(ElementUI)
 Vue.use(hljs)
 //封装成一个指令,highlight是指令的名称
