@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-04-16 18:55:34
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-16 20:55:13
+ * @LastEditTime: 2023-04-16 21:45:41
  * @FilePath: /chat_gpt/src/views/components/simcode.vue
 -->
 <template>
@@ -52,7 +52,7 @@
     </el-form>
     <SlideVerify
       @success="success"
-      v-show="showSlide">
+      v-if="showSlide">
     </SlideVerify>
   </div>
 </template>
@@ -87,7 +87,7 @@ export default {
   },
   methods: {
     getCodes() {
-      const TIME_COUNT = 60
+      const TIME_COUNT = 10
       if (!this.timer) {
         this.time = TIME_COUNT
         this.disabled = true
