@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-14 08:51:49
+ * @LastEditTime: 2023-04-17 13:52:31
  * @FilePath: /chat_gpt/src/views/scoket/index.vue
 -->
 <template>
@@ -204,12 +204,13 @@ export default {
       console.log(e.data)
       //接收数据
       // this.lists.push(jsonObj.message)
-      if (e.data.includes('\n')) {
-        let str = `${e.data.replace(/\n/g, '<br/>')}`
-        this.arr.push(str)
-      } else {
-        this.arr.push(e.data)
-      }
+      // if (e.data.includes('\n')) {
+      //   let str = `${e.data.replace(/\n/g, '<br/>')}`
+      //   this.arr.push(str)
+      // } else {
+      //   this.arr.push(e.data)
+      // }
+      this.arr.push(e.data)
     },
     webSocketClose(e) {
       this.scoketText = '断开连接'

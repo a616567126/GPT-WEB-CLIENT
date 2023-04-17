@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-25 15:16:43
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-06 14:49:41
+ * @LastEditTime: 2023-04-17 13:08:06
  * @FilePath: /chat_gpt/src/layout/mainUser.vue
 -->
 <template>
@@ -24,8 +24,8 @@
           @click="$router.push('/')"><i
             class="el-icon-arrow-left"></i>
           返回</el-button>
-        <span
-          style="margin-left: 20px;">{{ $route.meta.title }}</span>
+        <!-- <span
+          style="margin-left: 20px;">{{ $route.meta.title }}</span> -->
       </div>
       <div class="rights">
         <span

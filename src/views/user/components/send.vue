@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-24 14:30:48
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-08 14:08:35
+ * @LastEditTime: 2023-04-17 13:51:04
  * @FilePath: /chat_gpt/src/views/user/components/send.vue
 -->
 <template>
@@ -125,16 +125,18 @@ export default {
                 content: '网络异常，请重试。',
                 role: 'assistant'
               }
-              const index = res.msg.indexOf('_')
-              const logId = res.msg.substring(index + 1, res.msg.length)
-              window.localStorage.setItem('logId', logId)
-              this.chatListss.push(objs)
-              setTimeout(() => {
-                window.localStorage.setItem('newMessages', JSON.stringify(this.chatListss))
-              }, 500)
-              this.$https('ADD', { logId: logId, newMessages: JSON.stringify(this.chatListss) }).then(res => {
-                this.$emit('ok')
-              })
+              if (res.msg.indexOf('_')) {
+                const index = res.msg.indexOf('_')
+                const logId = res.msg.substring(index + 1, res.msg.length)
+                window.localStorage.setItem('logId', logId)
+                this.chatListss.push(objs)
+                setTimeout(() => {
+                  window.localStorage.setItem('newMessages', JSON.stringify(this.chatListss))
+                }, 500)
+                this.$https('ADD', { logId: logId, newMessages: JSON.stringify(this.chatListss) }).then(res => {
+                  this.$emit('ok')
+                })
+              }
             }
           })
         }, 500)
