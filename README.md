@@ -56,8 +56,6 @@
 
 ### And coding style tests
  
- **后端基于另一个开源项目开发，所用到jdk8特性**  
- 
  **java 后端地址[GPT-WEB-CLIENT](https://github.com/a616567126/GPT-WEB-)**  
  
  
