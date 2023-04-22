@@ -253,15 +253,18 @@
       ref="showAliPay"
       @AlipayType="AlipayType">
     </AliPayModal>
-
+    <Qrcode ref="qrcode"
+      @handleClose="handleClose">
+    </Qrcode>
   </div>
 </template>
 
 <script>
 import PayModal from './components/payModal.vue'
 import AliPayModal from './components/payModalAli.vue'
+import Qrcode from './components/qrcode.vue'
 export default {
-  components: { PayModal, AliPayModal },
+  components: { PayModal, AliPayModal, Qrcode },
   data() {
     return {
       phone: false,
@@ -287,16 +290,33 @@ export default {
         window.localStorage.setItem('orderList', JSON.stringify(res.data.orderList))
       })
     },
+    handleClose() {
+      this.getData()
+    },
     AlipayType(data) {
-      console.log(data, '0')
-      this.$message.success('正在发起支付...')
-      this.$https('ALIPAY', data).then(res => {
-        if (res.status == 200) {
-          document.write(res.data)
+      setTimeout(() => {
+        const obj = JSON.parse(window.localStorage.getItem('type'))
+        console.log(obj)
+        if (obj.type == 'alipay') {
+          this.$message.success('正在发起支付...')
+          this.$https('ALIPAY', data).then(res => {
+            if (res.status == 200) {
+              document.write(res.data)
+            } else {
+              this.$message.warning(res.msg)
+            }
+          })
         } else {
-          this.$message.warning(res.msg)
+          this.$message.success('正在发起支付...')
+          this.$https('WEIPAY', data).then(res => {
+            if (res.status == 200) {
+              this.$refs.qrcode.open(res.data)
+            } else {
+              this.$message.warning(res.msg)
+            }
+          })
         }
-      })
+      }, 1000)
     },
     payFun(data) {
       this.$message.success('正在发起支付...')
@@ -325,7 +345,6 @@ export default {
       })
     },
     openPay(data, index) {
-      console.log(data, index)
       this.$https('getType', {}).then(res => {
         if (data.type == 2 && res.data.type !== 1) {
           this.$alert('只有月卡用户可以购买加油包', '提示')
@@ -333,7 +352,8 @@ export default {
           if (this.payType == 0) {
             this.$refs.showPay.open(data)
           } else {
-            this.$refs.showAliPay.open(data)
+            window.localStorage.removeItem('type')
+            this.$refs.showAliPay.open(data, this.payType)
           }
         }
       })

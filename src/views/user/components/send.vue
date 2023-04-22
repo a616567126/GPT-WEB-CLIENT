@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-24 14:30:48
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-17 13:51:04
+ * @LastEditTime: 2023-04-17 16:32:41
  * @FilePath: /chat_gpt/src/views/user/components/send.vue
 -->
 <template>
@@ -121,6 +121,7 @@ export default {
                 // }).then(res => {})
               }, 500)
             } else {
+              console.log(1)
               const objs = {
                 content: '网络异常，请重试。',
                 role: 'assistant'
@@ -128,14 +129,16 @@ export default {
               if (res.msg.indexOf('_')) {
                 const index = res.msg.indexOf('_')
                 const logId = res.msg.substring(index + 1, res.msg.length)
-                window.localStorage.setItem('logId', logId)
-                this.chatListss.push(objs)
-                setTimeout(() => {
-                  window.localStorage.setItem('newMessages', JSON.stringify(this.chatListss))
-                }, 500)
-                this.$https('ADD', { logId: logId, newMessages: JSON.stringify(this.chatListss) }).then(res => {
-                  this.$emit('ok')
-                })
+                if (logId && logId.length == 19) {
+                  window.localStorage.setItem('logId', logId)
+                  this.chatListss.push(objs)
+                  setTimeout(() => {
+                    window.localStorage.setItem('newMessages', JSON.stringify(this.chatListss))
+                  }, 500)
+                  this.$https('ADD', { logId: logId, newMessages: JSON.stringify(this.chatListss) }).then(res => {
+                    this.$emit('ok')
+                  })
+                }
               }
             }
           })

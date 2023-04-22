@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-23 20:49:05
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-15 20:09:34
+ * @LastEditTime: 2023-04-21 15:20:02
  * @FilePath: /chat_gpt/src/views/user/components/payModalAli.vue
 -->
 <template>
@@ -32,7 +32,7 @@
         <el-select
           v-model="ruleForm.type"
           style="width:100%"
-          disabled
+          :disabled="disabled"
           placeholder="请选择支付方式">
           <el-option
             v-for="item in options"
@@ -59,7 +59,10 @@
         @click="handleClose">取消</el-button>
       <el-button
         type="primary"
-        @click="handleSubmit">确定</el-button>
+        @click="handleSubmit">
+        <i class="el-icon-loading"
+          v-if="loading"></i>
+        确定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -70,10 +73,12 @@ export default {
     return {
       dialogVisible: false,
       position: 'right',
+      loading: false,
       ruleForm: {
         payNumber: 1,
-        type: 'alipay'
+        type: ''
       },
+      disabled: true,
       rules: {
         payNumber: [{ required: true, message: '请输入购买数量', trigger: 'blur' }],
         type: [{ required: true, message: '请选择支付方式', trigger: 'change' }]
@@ -81,11 +86,6 @@ export default {
       width: '400px',
       phone: false,
       options: [
-        {
-          icon: require('@/assets/qq.png'),
-          name: 'QQ钱包',
-          type: 'qqpay'
-        },
         {
           icon: require('@/assets/wx.png'),
           name: '微信支付',
@@ -100,7 +100,20 @@ export default {
     }
   },
   methods: {
-    open(data) {
+    open(data, type) {
+      if (type == 1) {
+        this.disabled = true
+        this.ruleForm.payNumber = 1
+        this.ruleForm.type = 'wxpay'
+      } else if (type == 2) {
+        this.disabled = true
+        this.ruleForm.payNumber = 1
+        this.ruleForm.type = 'alipay'
+      } else {
+        this.disabled = false
+        this.ruleForm.payNumber = 1
+        this.ruleForm.type = ''
+      }
       this.dialogVisible = true
       this.ruleForm.productId = data.id
       this.phone = JSON.parse(window.localStorage.getItem('phone'))
@@ -111,16 +124,20 @@ export default {
       this.dialogVisible = false
       this.ruleForm = {
         payNumber: 1,
-        type: 'alipay',
+        type: '',
         productId: ''
       }
     },
     handleSubmit() {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
-          console.log(this.ruleForm)
+          this.loading = true
           this.$emit('AlipayType', this.ruleForm)
-          this.handleClose()
+          window.localStorage.setItem('type', JSON.stringify(this.ruleForm))
+          setTimeout(() => {
+            this.loading = false
+            this.handleClose()
+          }, 1000)
         }
       })
     }

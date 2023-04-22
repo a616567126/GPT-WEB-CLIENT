@@ -9,7 +9,6 @@
 -->
 <template>
   <div>
-
     <div class="menu_box"
       :class="{'phone':phone?true:false}"
       style="padding:20px">
