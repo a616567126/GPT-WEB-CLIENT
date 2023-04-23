@@ -4,12 +4,14 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-08 10:58:35
+ * @LastEditTime: 2023-04-23 10:59:41
  * @FilePath: /chat_gpt/src/views/user/index.vue
 -->
 <template>
   <div class="contents">
-    <div class="body">
+    <div class="body" :class="{
+      'phone':phone?true:false
+    }">
       <Notice :notice="notice"
         @open="open">
       </Notice>
@@ -54,6 +56,17 @@
           <el-tooltip
             class="item"
             effect="dark"
+            content="即时通讯"
+            placement="top-start">
+            <img
+              @click="changeChats(2)"
+              :class="{'active':isActive == 2}"
+              src="../../assets/chats_icon.png"
+              class="icon">
+          </el-tooltip>
+          <el-tooltip
+            class="item"
+            effect="dark"
             content="画图"
             placement="top-start">
             <img
@@ -65,14 +78,14 @@
           <el-tooltip
             class="item"
             effect="dark"
-            content="即时通讯"
+            content="SD"
             placement="top-start">
-            <img
-              @click="changeChats(2)"
-              :class="{'active':isActive == 2}"
-              src="../../assets/chats_icon.png"
-              class="icon">
+            <i class="el-icon-picture icon"
+              v-show="sdState > 0"
+              style="font-size:20px;color:#666666"
+              @click="changeChats(4)"></i>
           </el-tooltip>
+
           <el-tooltip
             class="item"
             effect="dark"
@@ -153,12 +166,14 @@ export default {
       chatList: [],
       oldScrollTop: 0,
       phone: false,
+      sdState: 0,
       notice: ''
     }
   },
   created() {},
 
   mounted() {
+    this.getSdState()
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
     console.log(this.phone, '000')
     document.querySelector('.box').addEventListener('scroll', this.scrolling)
@@ -180,6 +195,11 @@ export default {
     }
   },
   methods: {
+    getSdState() {
+      this.$https('GETSDSTATE', {}).then(res => {
+        this.sdState = res.data
+      })
+    },
     chatListss(data) {
       this.chatListses = data
     },
@@ -202,6 +222,8 @@ export default {
         this.$router.push('/')
       } else if (e == 3) {
         this.$router.push('/user/product')
+      } else if (e == 4) {
+        this.$router.push('/sdPage/index')
       } else {
         this.isActive = e
       }
@@ -295,9 +317,9 @@ export default {
   .body {
     border: 1px solid #e6e6e6;
     border-radius: 10px;
-    overflow: hidden;
-    width: calc(100vw - 30px);
-    height: calc(100vh - 80px);
+    overflow: hidden !important;
+    width: calc(100vw - 30px) !important;
+    height: calc(100vh - 60px) !important;
     position: relative;
     .main_home {
       display: flex;

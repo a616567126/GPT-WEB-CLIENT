@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-04-16 18:55:34
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-16 21:45:41
+ * @LastEditTime: 2023-04-23 10:02:16
  * @FilePath: /chat_gpt/src/views/components/simcode.vue
 -->
 <template>
@@ -73,10 +73,7 @@ export default {
       showSlide: false,
       codeText: '获取验证码',
       regrules: {
-        name: [
-          { required: true, message: '请输入姓名', trigger: 'blur' },
-          { max: 8, min: 2, message: '不能超过8个字符', trigger: 'blur' }
-        ],
+        name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
         msgCode: [{ required: true, message: '请输入验证码', trigger: 'blur' }],
         mobile: [
           { required: true, message: '请输入手机号', trigger: 'blur' },

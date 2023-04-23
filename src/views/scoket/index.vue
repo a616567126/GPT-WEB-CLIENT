@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-17 13:52:31
+ * @LastEditTime: 2023-04-23 08:36:15
  * @FilePath: /chat_gpt/src/views/scoket/index.vue
 -->
 <template>
@@ -67,6 +67,16 @@
               @click="changeChats(3)"
               src="../../assets/picture.png"
               class="icon">
+          </el-tooltip>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="SD"
+            placement="top-start">
+            <i class="el-icon-picture icon"
+              v-show="sdSatte > 0"
+              style="font-size:20px;color:#666666"
+              @click="changeChats(4)"></i>
           </el-tooltip>
           <el-tooltip
             class="item"
@@ -151,12 +161,14 @@ export default {
       phone: false,
       notice: '',
       arr: [],
+      sdSatte: 0,
       mdRegex: ''
     }
   },
   created() {},
 
   mounted() {
+    this.getSdState()
     this.mdRegex = /[#*`|]/
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
     document.querySelector('.box').addEventListener('scroll', this.scrolling)
@@ -184,6 +196,11 @@ export default {
     }
   },
   methods: {
+    getSdState() {
+      this.$https('GETSDSTATE', {}).then(res => {
+        this.sdSatte = res.data
+      })
+    },
     // 发送websockwt请求
     initWebSocket() {
       let websocketUrl = this.wsUrl + '/chatWebSocket/' + JSON.parse(window.localStorage.getItem('userInfo')).userId
@@ -255,6 +272,8 @@ export default {
             id: e
           }
         })
+      } else if (e == 4) {
+        this.$router.push('/sdPage/index')
       }
     },
     getData() {

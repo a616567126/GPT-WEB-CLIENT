@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-06 16:43:38
+ * @LastEditTime: 2023-04-22 16:25:06
  * @FilePath: /chat_gpt/src/router/index.js
  */
 import Vue from 'vue'
@@ -61,6 +61,15 @@ export const routes = [
         path: '/user/notice',
         name: 'notice',
         component: () => import('../views/user/notice.vue')
+      },
+      {
+        name: 'SD',
+        meta: {
+          title: 'SD'
+        },
+        path: '/sdPage/index',
+        name: 'sdPage',
+        component: () => import('../views/sdPage/index.vue')
       }
     ]
   }
