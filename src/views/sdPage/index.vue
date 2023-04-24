@@ -202,10 +202,10 @@ export default {
         prompt: '',
         negativePrompt: '',
         samplerIndex: '',
-        steps: 1,
+        steps: 20,
         width: 512,
         height: 512,
-        batchSize: 4,
+        batchSize: 1,
         cfgScale: 7,
         seed: -1,
         eta: 1
