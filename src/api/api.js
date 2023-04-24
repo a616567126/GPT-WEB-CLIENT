@@ -5,11 +5,11 @@ export const baseUrl = 'https://gpt.v-wim.xyz-a-s'
  * @Author: 小白
  * @Date: 2022-04-25 15:58:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-23 10:06:11
+ * @LastEditTime: 2023-04-23 15:54:37
  * @FilePath: /chat_gpt/src/api/api.js
  */
 export const baseUrl = 'https://gpt.v-wim.xyz'
-// export const baseUrl = 'https://e5a7-61-176-96-198.ngrok-free.app/'
+// export const baseUrl = 'https://dychat.club/prod-api'
 export const wsUrl = 'wss://gpt.v-wim.xyz'
 // export const wsUrl = 'wss://dychat.club/prod-api'
 
@@ -33,6 +33,8 @@ export const HTTP_URI = {
   CODEREG: baseUrl + '/user/token/register/msm',
   WEIPAY: baseUrl + '/order/wx/create',
   GETSDSTATE: baseUrl + '/sd/getOpenSdState',
-  CREATESD: baseUrl + '/sd/create'
+  CREATESD: baseUrl + '/sd/create',
+  EMAILREG: baseUrl + '/user/token/register/email',
+  SENDMAILCODE: baseUrl + '/user/token/send/mail'
 }
 export default { HTTP_URI, baseUrl }

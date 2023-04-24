@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-04-22 16:23:31
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-23 10:35:32
+ * @LastEditTime: 2023-04-23 13:18:47
  * @FilePath: /chat_gpt/src/views/sdPage/index.vue
 -->
 <template>
@@ -66,7 +66,7 @@
             <el-slider
               disabled
               v-model="form.steps"
-              max="100"></el-slider>
+              :max="100"></el-slider>
           </el-card>
         </el-col>
         <el-col :lg="6">
@@ -81,7 +81,7 @@
             <el-slider
               disabled
               v-model="form.width"
-              max="1000"></el-slider>
+              :max="1000"></el-slider>
           </el-card>
         </el-col>
         <el-col :lg="6">
@@ -96,7 +96,7 @@
             <el-slider
               disabled
               v-model="form.height"
-              max="1000"></el-slider>
+              :max="1000"></el-slider>
           </el-card>
         </el-col>
         <el-col :lg="6">
@@ -109,7 +109,7 @@
                 style="float: right;">{{ form.batchSize }}</span>
             </div>
             <el-slider
-              max="10"
+              :max="10"
               disabled
               v-model="form.batchSize"></el-slider>
           </el-card>
@@ -124,7 +124,7 @@
                 style="float: right;">{{ form.cfgScale }}</span>
             </div>
             <el-slider
-              max="10"
+              :max="10"
               disabled
               v-model="form.cfgScale"></el-slider>
           </el-card>
@@ -153,11 +153,15 @@
         </el-col>
         <el-col :lg="12">
           <el-card
-            style="height:294px;margin-top: 10px; display: flex;justify-content: center;align-items: center;">
-            <img v-if="imgs"
-              :src="imgs"
-              style="width: 100%;height: 100%;">
-            <i v-if="!imgs"
+            style="min-height:294px;margin-top: 10px;overflow-y: auto;">
+            <el-card
+              style="float:left;margin:5px"
+              v-for="(item,index) in imgList"
+              :key="index">
+              <img :src="item"
+                style="width: 100%;height: 100%;">
+            </el-card>
+            <i v-if="imgList.length == 0"
               class="el-icon-picture"
               style="font-size: 24px;"></i>
           </el-card>
@@ -193,15 +197,15 @@ export default {
         'PLMS',
         'UniPC'
       ],
-      imgs: '',
+      imgList: [],
       form: {
         prompt: '',
         negativePrompt: '',
         samplerIndex: '',
-        steps: 20,
+        steps: 1,
         width: 512,
         height: 512,
-        batchSize: 1,
+        batchSize: 4,
         cfgScale: 7,
         seed: -1,
         eta: 1
@@ -210,9 +214,14 @@ export default {
   },
   methods: {
     createImg() {
+      this.imgList = []
       if (this.form.prompt) {
         this.$https('CREATESD', this.form).then(res => {
-          this.imgs = res.data[0]
+          if (res.code == '50000') {
+            this.$message.error(res.msg)
+          } else {
+            this.imgList = res.data
+          }
         })
       } else {
         this.$message.error('请输入正面提示词')

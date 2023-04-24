@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-21 21:29:37
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-16 21:00:17
+ * @LastEditTime: 2023-04-23 16:32:38
  * @FilePath: /chat_gpt/src/views/login.vue
 -->
 <template>
@@ -82,6 +82,10 @@
             style="text-align:center">
             关注公众号开通账号</div>
         </div>
+        <mailcodeVue
+          v-if="regs== 4"
+          @regloginMail="regloginMail">
+        </mailcodeVue>
       </el-card>
       <el-button
         v-if="showPage"
@@ -98,8 +102,9 @@
 <script>
 import accountVue from './components/account.vue'
 import simcodeVue from './components/simcode.vue'
+import mailcodeVue from './components/mailcode.vue'
 export default {
-  components: { accountVue, simcodeVue },
+  components: { accountVue, simcodeVue, mailcodeVue },
   data() {
     return {
       showPage: true,
@@ -112,10 +117,7 @@ export default {
       type: 'password',
       regs: 0,
       rules: {
-        mobile: [
-          { required: true, message: '请输入手机号', trigger: 'change' },
-          { max: 11, min: 11, message: '手机号格式错误', trigger: 'change' }
-        ],
+        mobile: [{ required: true, message: '请输入手机号', trigger: 'change' }],
         password: [{ required: true, message: '请输入密码', trigger: 'change' }]
       }
     }
@@ -156,6 +158,17 @@ export default {
     },
     reglogins(data) {
       this.$https('CODEREG', data).then(res => {
+        if (res.status == 200) {
+          this.$message.success('注册成功！')
+          this.showPage = !this.showPage
+          this.$alert(res.data, '提示')
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    regloginMail(data) {
+      this.$https('EMAILREG', data).then(res => {
         if (res.status == 200) {
           this.$message.success('注册成功！')
           this.showPage = !this.showPage

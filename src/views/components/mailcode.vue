@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-04-16 18:55:34
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-23 16:08:34
+ * @LastEditTime: 2023-04-23 16:23:06
  * @FilePath: /chat_gpt/src/views/components/mailcode.vue
 -->
 <template>
@@ -29,11 +29,18 @@
           v-model="regform.mobile"></el-input>
       </el-form-item>
       <el-form-item
-        prop="msgCode">
+        prop="email">
+        <el-input
+          prefix-icon="el-icon-message"
+          placeholder="请输入邮箱"
+          v-model="regform.email"></el-input>
+      </el-form-item>
+      <el-form-item
+        prop="emailCode">
         <el-input
           prefix-icon="el-icon-folder-checked"
           placeholder="请输入验证码"
-          v-model="regform.msgCode">
+          v-model="regform.emailCode">
           <el-button
             slot="append"
             @click="getCode"
@@ -47,8 +54,12 @@
           type="primary"
           @click="reglogin"
           style="width:100%">
-          注册1</el-button>
+          注册</el-button>
       </el-form-item>
+      <div v-if="message"
+        style="color:green;font-size: 13px;text-align: center; margin-top: 5px;">
+        {{ message }},请登录邮箱查看验证码
+      </div>
     </el-form>
     <SlideVerify
       @success="success"
@@ -66,15 +77,18 @@ export default {
       regform: {
         name: '',
         mobile: '',
-        msgCode: ''
+        email: '',
+        emailCode: ''
       },
+      message: '',
       disabled: false,
       timer: null,
       showSlide: false,
       codeText: '获取验证码',
       regrules: {
         name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
-        msgCode: [{ required: true, message: '请输入验证码', trigger: 'blur' }],
+        emailCode: [{ required: true, message: '请输入验证码', trigger: 'blur' }],
+        email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }],
         mobile: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
           { max: 11, min: 11, message: '手机号格式错误', trigger: 'change' }
@@ -84,7 +98,7 @@ export default {
   },
   methods: {
     getCodes() {
-      const TIME_COUNT = 10
+      const TIME_COUNT = 60
       if (!this.timer) {
         this.time = TIME_COUNT
         this.disabled = true
@@ -102,29 +116,31 @@ export default {
       }
     },
     getCode() {
-      if (this.regform.mobile) {
+      if (this.regform.email) {
         this.showSlide = true
       } else {
-        this.$message.warning('请输入手机号')
+        this.$message.warning('请输入邮箱')
       }
     },
     reglogin() {
       this.$refs.regform.validate(valid => {
         if (valid) {
-          this.$emit('reglogins', this.regform)
+          this.$emit('regloginMail', this.regform)
         }
       })
     },
     success(data) {
       this.showSlide = false
       this.getCodes()
-      this.$https('GETCODE', {
-        mobile: this.regform.mobile
+      this.$https('SENDMAILCODE', {
+        email: this.regform.email
       }).then(res => {
         if (res.status != 200) {
+          this.message = res.msg
           this.$message.error(res.msg)
         } else {
-          this.$message.success('短信发送成功！')
+          this.message = '发送成功！'
+          this.$message.success('发送成功！')
         }
       })
     }
