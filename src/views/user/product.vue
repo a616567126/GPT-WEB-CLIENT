@@ -346,7 +346,7 @@ export default {
     },
     openPay(data, index) {
       this.$https('getType', {}).then(res => {
-        if (data.type == 2 && res.data.type !== 1) {
+        if (data.type == 2 && res.data.type !== 2) {
           this.$alert('只有月卡用户可以购买加油包', '提示')
         } else {
           if (this.payType == 0) {
