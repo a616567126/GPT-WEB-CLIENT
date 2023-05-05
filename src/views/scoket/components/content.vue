@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-24 14:28:40
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-23 18:59:22
+ * @LastEditTime: 2023-05-04 13:36:21
  * @FilePath: /chat_gpt/src/views/scoket/components/content.vue
 -->
 <template>
@@ -77,14 +77,15 @@ export default {
         if (val.length > 0) {
           this.chatObj = {}
           this.chatObj = val[0]
+          console.log(val[0], '0202002')
         }
       },
       deep: true
     },
     isChat(val) {
-      console.log(val)
       this.chatObj = {}
       this.chatObj = this.chatList[val]
+
       // if (this.mdRegex.test(this.chatObj.answer)) {
       //   this.chatObj.answer = marked(this.chatObj.answer)
       // }

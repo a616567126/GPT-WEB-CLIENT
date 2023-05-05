@@ -5,13 +5,13 @@ export const baseUrl = 'https://gpt.v-wim.xyz-a-s'
  * @Author: 小白
  * @Date: 2022-04-25 15:58:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-23 15:54:37
+ * @LastEditTime: 2023-04-29 14:17:44
  * @FilePath: /chat_gpt/src/api/api.js
  */
-export const baseUrl = 'https://gpt.v-wim.xyz'
-// export const baseUrl = 'https://dychat.club/prod-api'
-export const wsUrl = 'wss://gpt.v-wim.xyz'
-// export const wsUrl = 'wss://dychat.club/prod-api'
+export const baseUrl = 'https://api.ttm666.com/'
+// export const baseUrl = 'https://ca1a-61-176-96-198.ngrok-free.app'
+export const wsUrl = 'wss://api.ttm666.com'
+// export const wsUrl = 'wss://ca1a-61-176-96-198.ngrok-free.app'
 
 // export const baseUrl = 'http://ee9qu3.natappfree.cc'
 export const HTTP_URI = {
@@ -32,7 +32,7 @@ export const HTTP_URI = {
   GETCODE: baseUrl + '/user/token/send/msg',
   CODEREG: baseUrl + '/user/token/register/msm',
   WEIPAY: baseUrl + '/order/wx/create',
-  GETSDSTATE: baseUrl + '/sd/getOpenSdState',
+  GETSDSTATE: baseUrl + '/user/token/getFunctionState',
   CREATESD: baseUrl + '/sd/create',
   EMAILREG: baseUrl + '/user/token/register/email',
   SENDMAILCODE: baseUrl + '/user/token/send/mail'

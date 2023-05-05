@@ -4,12 +4,11 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-29 20:03:22
- * @FilePath: /chat_gpt/src/views/scoket/index.vue
+ * @LastEditTime: 2023-05-04 16:21:54
+ * @FilePath: /chat_gpt/src/views/newBing/index.vue
 -->
 <template>
-  <div class="contents"
-    v-loading="loading">
+  <div class="contents">
     <div class="body">
       <Notice :notice="notice"
         @open="open">
@@ -29,6 +28,7 @@
         <div
           class="chat_right">
           <Content
+            ref="content"
             :isChat="isChat"
             :isChats="isChats"
             :chatList="chatLists">
@@ -44,7 +44,6 @@
             content="即时通讯"
             placement="top-start">
             <img
-              :class="{'active':isActive == 0}"
               src="../../assets/chats_icon.png"
               class="icon">
           </el-tooltip>
@@ -83,9 +82,9 @@
             effect="dark"
             content="newBing"
             placement="top-start">
-            <i class="el-icon-document-copy icon"
+            <i class="el-icon-document-copy icon active"
               v-show="isOpenBing > 0"
-              style="font-size:20px;color:#666666"
+              style="font-size:20px;"
               @click="changeChats(5)"></i>
           </el-tooltip>
           <el-tooltip
@@ -115,6 +114,12 @@
           @total="total">
         </SendText>
       </div>
+    </div>
+    <div class="loading"
+      v-if="loading">
+      <i
+        class="el-icon-loading"></i>
+      发送中...
     </div>
     <el-drawer
       :append-to-body="true"
@@ -196,13 +201,12 @@ export default {
     },
     arr: {
       handler(val) {
-        this.loading = false
         this.isChats = val.length
         this.chatList[0].answer = ''
         this.chatList[0].answer = val.join('')
-        if (this.mdRegex.test(this.chatList[0].answer)) {
-          this.chatList[0].answer = marked(this.chatList[0].answer)
-        }
+        // if (this.mdRegex.test(this.chatList[0].answer)) {
+        //   this.chatList[0].answer = marked(this.chatList[0].answer)
+        // }
       }
     }
   },
@@ -231,16 +235,25 @@ export default {
       // this.webSocketSend(this.id)
     },
     webSocketOnMessage(e) {
-      console.log(e.data)
+      console.log(e.data, '00')
       //接收数据
+      this.loading = false
       // this.lists.push(jsonObj.message)
       if (e.data.includes('\n')) {
         let str = `${e.data.replace(/\n/g, '<br/>')}`
-        this.arr.push(str)
+        if (str.includes('bing_')) {
+          let strs = `${str.replace(/bing_/g, '')}`
+          this.arr = [strs]
+        }
       } else {
-        this.arr.push(e.data)
+        if (e.data.includes('bing_')) {
+          let strs = `${e.data.replace(/bing_/g, '')}`
+          this.arr = [strs]
+        } else {
+          console.log(2)
+          this.arr = [e.data]
+        }
       }
-      // this.arr.push(e.data)
     },
     webSocketClose(e) {
       this.scoketText = '断开连接'
@@ -268,10 +281,16 @@ export default {
       }, 2000)
     },
     sendTexts(data) {
+      this.loading = true
+      const type = this.$refs.content.isActive
       this.arr = []
       this.chatList.unshift(data)
-      // this.loading = true
-      this.webSocketSend(data.question)
+      const obj = {
+        messgeType: 'bing',
+        model: type,
+        prompt: data.question
+      }
+      this.webSocketSend(JSON.stringify(obj))
     },
     changeChats(e) {
       if (e == 1) {
@@ -293,18 +312,18 @@ export default {
     },
     getData() {
       this.$https('USERHOME', {
-        sendType: 1
+        sendType: 2
       }).then(res => {
         this.notice = res.data.content
         this.chatList = res.data.logList
 
         if (this.chatList.length > 0) {
           this.title = this.chatList[0].question
-          this.chatList.map(item => {
-            if (this.mdRegex.test(item.answer)) {
-              item.answer = marked(item.answer)
-            }
-          })
+          // this.chatList.map(item => {
+          //   if (this.mdRegex.test(item.answer)) {
+          //     item.answer = marked(item.answer)
+          //   }
+          // })
         } else {
           const obj = {
             disabled: true,
@@ -370,6 +389,21 @@ export default {
 </script>
 <style lang="scss">
 .contents {
+  position: relative;
+  .loading {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    flex-flow: column;
+    color: blue;
+    z-index: 9999;
+    justify-content: center;
+  }
   .body {
     border: 1px solid #e6e6e6;
     border-radius: 10px;
@@ -449,6 +483,7 @@ export default {
   .icon:hover,
   .icon.active {
     filter: grayscale(0);
+    color: blueviolet;
   }
 }
 .input_box {

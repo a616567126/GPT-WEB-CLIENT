@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-22 16:25:06
+ * @LastEditTime: 2023-04-29 11:14:51
  * @FilePath: /chat_gpt/src/router/index.js
  */
 import Vue from 'vue'
@@ -70,6 +70,15 @@ export const routes = [
         path: '/sdPage/index',
         name: 'sdPage',
         component: () => import('../views/sdPage/index.vue')
+      },
+      {
+        name: 'newBing',
+        meta: {
+          title: 'newBing'
+        },
+        path: '/newBing/index',
+        name: 'newBing',
+        component: () => import('../views/newBing/index.vue')
       }
     ]
   }

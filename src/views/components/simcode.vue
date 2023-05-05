@@ -47,7 +47,7 @@
           type="primary"
           @click="reglogin"
           style="width:100%">
-          注册1</el-button>
+          注册</el-button>
       </el-form-item>
     </el-form>
     <SlideVerify

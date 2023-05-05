@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-23 10:59:41
+ * @LastEditTime: 2023-04-29 11:19:22
  * @FilePath: /chat_gpt/src/views/user/index.vue
 -->
 <template>
@@ -84,6 +84,16 @@
               v-show="sdState > 0"
               style="font-size:20px;color:#666666"
               @click="changeChats(4)"></i>
+          </el-tooltip>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="newBing"
+            placement="top-start">
+            <i class="el-icon-document-copy icon"
+              v-show="isOpenBing > 0"
+              style="font-size:20px;color:#666666"
+              @click="changeChats(5)"></i>
           </el-tooltip>
 
           <el-tooltip
@@ -167,6 +177,7 @@ export default {
       oldScrollTop: 0,
       phone: false,
       sdState: 0,
+      isOpenBing: 0,
       notice: ''
     }
   },
@@ -197,7 +208,8 @@ export default {
   methods: {
     getSdState() {
       this.$https('GETSDSTATE', {}).then(res => {
-        this.sdState = res.data
+        this.sdState = res.data.isOpenSd
+        this.isOpenBing = res.data.isOpenBing
       })
     },
     chatListss(data) {
@@ -224,6 +236,8 @@ export default {
         this.$router.push('/user/product')
       } else if (e == 4) {
         this.$router.push('/sdPage/index')
+      } else if (e == 5) {
+        this.$router.push('/newBing/index')
       } else {
         this.isActive = e
       }
