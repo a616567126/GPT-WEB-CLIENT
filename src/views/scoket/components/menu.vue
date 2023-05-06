@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-23 20:34:36
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-06 17:32:10
+ * @LastEditTime: 2023-05-06 08:28:52
  * @FilePath: /chat_gpt/src/views/scoket/components/menu.vue
 -->
 <template>
@@ -167,10 +167,6 @@ export default {
     },
     payPage() {
       this.$store.commit('SET_OPEN', false)
-      this.$https('REPEST', {
-        logId: window.localStorage.getItem('logId'),
-        newMessages: window.localStorage.getItem('newMessages')
-      }).then(res => {})
       this.$router.push('/user/product')
     }
   }
