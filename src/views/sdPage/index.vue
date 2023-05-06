@@ -4,20 +4,38 @@
  * @Author: smallWhite
  * @Date: 2023-04-22 16:23:31
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-23 13:18:47
+ * @LastEditTime: 2023-05-06 10:42:11
  * @FilePath: /chat_gpt/src/views/sdPage/index.vue
 -->
 <template>
   <div class="sd_page">
-    <el-card>
+    <el-card
+      style="margin-bottom: 20px;">
       <div slot="header">
-        txt2img
+        文生图
       </div>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-select
+            v-model="form.sdModelCheckpoint"
+            placeholder="请选择模型"
+            style="width:100%">
+            <el-option
+              v-for="(item,index) in modeList"
+              :key="index"
+              :label="item"
+              :value="item"></el-option>
+          </el-select>
+        </el-col>
+      </el-row>
+    </el-card>
+    <el-card>
+
       <div class="boxs">
         <div class="item">
           <el-input
             type="textarea"
-            placeholder="Prompt (press Ctrl+Enter or Alt+Enter to generate)"
+            placeholder="正面提示词"
             style="width: 100%;"
             v-model="form.prompt"></el-input>
         </div>
@@ -32,7 +50,7 @@
         style="margin-top: 10px;">
         <el-input
           type="textarea"
-          placeholder="Negative prompt (press Ctrl+Enter or Alt+Enter to generate)"
+          placeholder="负面提示词"
           v-model="form.negativePrompt"></el-input>
       </div>
       <el-row :gutter="20">
@@ -41,7 +59,7 @@
             style="margin: 10px 0;height: 142px;">
             <div
               slot="header">
-              Sampling method
+              采样方法
             </div>
             <el-select
               v-model="form.samplerIndex"
@@ -59,14 +77,13 @@
             style="margin: 10px 0;height: 142px;">
             <div
               slot="header">
-              Sampling steps
+              采样迭代步数
               <span
                 style="float: right;">{{ form.steps }}</span>
             </div>
             <el-slider
-              disabled
               v-model="form.steps"
-              :max="100"></el-slider>
+              :max="30"></el-slider>
           </el-card>
         </el-col>
         <el-col :lg="6">
@@ -74,14 +91,13 @@
             style="margin: 10px 0;height: 142px;">
             <div
               slot="header">
-              width
+              宽度
               <span
                 style="float: right;">{{ form.width }}</span>
             </div>
             <el-slider
-              disabled
               v-model="form.width"
-              :max="1000"></el-slider>
+              :max="512"></el-slider>
           </el-card>
         </el-col>
         <el-col :lg="6">
@@ -89,14 +105,13 @@
             style="margin: 10px 0;height: 142px;">
             <div
               slot="header">
-              height
+              高度
               <span
                 style="float: right;">{{ form.height }}</span>
             </div>
             <el-slider
-              disabled
               v-model="form.height"
-              :max="1000"></el-slider>
+              :max="512"></el-slider>
           </el-card>
         </el-col>
         <el-col :lg="6">
@@ -104,7 +119,7 @@
             style="margin: 10px 0;height: 142px;">
             <div
               slot="header">
-              Batch size
+              批次数量
               <span
                 style="float: right;">{{ form.batchSize }}</span>
             </div>
@@ -119,13 +134,12 @@
             style="margin: 10px 0;height: 142px;">
             <div
               slot="header">
-              CFG Scale
+              提示词相关性
               <span
                 style="float: right;">{{ form.cfgScale }}</span>
             </div>
             <el-slider
               :max="10"
-              disabled
               v-model="form.cfgScale"></el-slider>
           </el-card>
         </el-col>
@@ -134,22 +148,22 @@
             style="margin: 10px 0;height: 142px;">
             <div
               slot="header">
-              Seed
+              脸部修复
             </div>
-            <el-input
-              v-model="form.seed"
-              placeholder="请输入"></el-input>
+            <el-checkbox
+              v-model="form.restoreFaces">脸部修复</el-checkbox>
           </el-card>
           <el-card
             style="margin: 10px 0;height: 142px;">
             <div
               slot="header">
-              ETA
+              随机种子
             </div>
             <el-input
-              v-model="form.eta"
+              v-model="form.seed"
               placeholder="请输入"></el-input>
           </el-card>
+
         </el-col>
         <el-col :lg="12">
           <el-card
@@ -176,43 +190,56 @@ export default {
   data() {
     return {
       SamplingList: [
-        'Euler a',
-        'Euler',
-        'LMS',
-        'Heun',
-        'DPM2',
-        'DPM2 a',
-        'DPM++ 2S a',
-        'DPM++ 2M',
-        'DPM++ SDE',
-        'DPM fast',
-        'DPM adaptive',
-        'LMS Karras',
-        'DPM2 Karras',
-        'DPM2 a Karras',
-        'DPM++ 2S a Karras',
-        'DPM++ 2M Karras',
-        'DPM++ SDE Karras',
-        'DDIM',
-        'PLMS',
-        'UniPC'
+        // 'Euler a',
+        // 'Euler',
+        // 'LMS',
+        // 'Heun',
+        // 'DPM2',
+        // 'DPM2 a',
+        // 'DPM++ 2S a',
+        // 'DPM++ 2M',
+        // 'DPM++ SDE',
+        // 'DPM fast',
+        // 'DPM adaptive',
+        // 'LMS Karras',
+        // 'DPM2 Karras',
+        // 'DPM2 a Karras',
+        // 'DPM++ 2S a Karras',
+        // 'DPM++ 2M Karras',
+        // 'DPM++ SDE Karras',
+        // 'DDIM',
+        // 'PLMS',
+        // 'UniPC'
       ],
       imgList: [],
       form: {
         prompt: '',
         negativePrompt: '',
         samplerIndex: '',
-        steps: 20,
+        steps: 1,
+        restoreFaces: true,
         width: 512,
         height: 512,
         batchSize: 1,
         cfgScale: 7,
         seed: -1,
         eta: 1
-      }
+      },
+      modeList: []
     }
   },
+  mounted() {
+    this.getMode()
+  },
   methods: {
+    getMode() {
+      this.$https('GETMODE', {}).then(res => {
+        this.modeList = res.data
+      })
+      this.$https('GETMODES', {}).then(res => {
+        this.SamplingList = res.data
+      })
+    },
     createImg() {
       this.imgList = []
       if (this.form.prompt) {

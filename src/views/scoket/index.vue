@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-29 20:03:22
+ * @LastEditTime: 2023-05-06 10:14:58
  * @FilePath: /chat_gpt/src/views/scoket/index.vue
 -->
 <template>
