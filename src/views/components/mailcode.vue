@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-04-16 18:55:34
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-23 16:23:06
+ * @LastEditTime: 2023-05-05 18:21:52
  * @FilePath: /chat_gpt/src/views/components/mailcode.vue
 -->
 <template>
@@ -83,6 +83,7 @@ export default {
       message: '',
       disabled: false,
       timer: null,
+      showYzMode: false,
       showSlide: false,
       codeText: '获取验证码',
       regrules: {
@@ -117,7 +118,20 @@ export default {
     },
     getCode() {
       if (this.regform.email) {
-        this.showSlide = true
+        if (this.showYzMode == true) {
+          this.showSlide = true
+        } else {
+          this.getCodes()
+          this.$https('GETCODE', {
+            mobile: this.regform.mobile
+          }).then(res => {
+            if (res.status != 200) {
+              this.$message.error(res.msg)
+            } else {
+              this.$message.success('短信发送成功！')
+            }
+          })
+        }
       } else {
         this.$message.warning('请输入邮箱')
       }

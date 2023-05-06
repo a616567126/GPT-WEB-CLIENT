@@ -4,8 +4,8 @@
  * @Author: smallWhite
  * @Date: 2023-04-16 18:55:34
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-23 16:08:34
- * @FilePath: /chat_gpt/src/views/components/mailcode.vue
+ * @LastEditTime: 2023-05-05 18:22:31
+ * @FilePath: /chat_gpt/src/views/components/simcode.vue
 -->
 <template>
   <div>
@@ -68,6 +68,7 @@ export default {
         mobile: '',
         msgCode: ''
       },
+      showYzMode: false,
       disabled: false,
       timer: null,
       showSlide: false,
@@ -103,7 +104,20 @@ export default {
     },
     getCode() {
       if (this.regform.mobile) {
-        this.showSlide = true
+        if (this.showYzMode == true) {
+          this.showSlide = true
+        } else {
+          this.getCodes()
+          this.$https('GETCODE', {
+            mobile: this.regform.mobile
+          }).then(res => {
+            if (res.status != 200) {
+              this.$message.error(res.msg)
+            } else {
+              this.$message.success('短信发送成功！')
+            }
+          })
+        }
       } else {
         this.$message.warning('请输入手机号')
       }
