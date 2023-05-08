@@ -4,7 +4,7 @@
  * @Author: 小白
  * @Date: 2022-03-02 13:14:18
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-03-22 13:39:07
+ * @LastEditTime: 2023-05-08 09:30:46
  * @FilePath: /chat_gpt/src/api/http.js
  */
 import request from './request'
@@ -15,6 +15,14 @@ export const REQUEST = {
     return request({
       url: HTTP_URI[businessType],
       method: 'post',
+      data: datas
+    })
+  },
+  PUT: function (businessType, datas, isToken) {
+    if (!HTTP_URI[businessType]) return
+    return request({
+      url: HTTP_URI[businessType],
+      method: 'put',
       data: datas
     })
   },

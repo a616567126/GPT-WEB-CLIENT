@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-05-06 10:14:58
+ * @LastEditTime: 2023-05-08 08:21:40
  * @FilePath: /chat_gpt/src/views/scoket/index.vue
 -->
 <template>
@@ -91,6 +91,16 @@
           <el-tooltip
             class="item"
             effect="dark"
+            content="fs"
+            placement="top-start">
+            <i class="el-icon-cpu icon"
+              v-show="isOpenFlagStudio > 0"
+              @click="changeChats(7)"
+              style="font-size:20px;color:#666666"></i>
+          </el-tooltip>
+          <el-tooltip
+            class="item"
+            effect="dark"
             content="充值"
             placement="top-start">
             <img
@@ -173,6 +183,7 @@ export default {
       arr: [],
       sdSatte: 0,
       isOpenBing: 0,
+      isOpenFlagStudio: 0,
       mdRegex: ''
     }
   },
@@ -211,6 +222,7 @@ export default {
       this.$https('GETSDSTATE', {}).then(res => {
         console.log(res.data)
         this.sdSatte = res.data.isOpenSd
+        this.isOpenFlagStudio = res.data.isOpenFlagStudio
         this.isOpenBing = res.data.isOpenBing
       })
     },
@@ -289,6 +301,8 @@ export default {
         this.$router.push('/sdPage/index')
       } else if (e == 5) {
         this.$router.push('/newBing/index')
+      } else if (e == 7) {
+        this.$router.push('/fsPage/index')
       }
     },
     getData() {
