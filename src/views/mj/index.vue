@@ -4,12 +4,11 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-05-10 16:34:40
- * @FilePath: /chat_gpt/src/views/scoket/index.vue
+ * @LastEditTime: 2023-05-10 17:25:49
+ * @FilePath: /chat_gpt/src/views/mj/index.vue
 -->
 <template>
-  <div class="contents"
-    v-loading="loading">
+  <div class="contents">
     <div class="body">
       <Notice :notice="notice"
         @open="open">
@@ -29,9 +28,14 @@
         <div
           class="chat_right">
           <Content
-            :isChat="isChat"
-            :isChats="isChats"
-            :chatList="chatLists">
+            :loadingImg="loadingImg"
+            @changeImg="changeImg"
+            :promptZh="promptZh"
+            :status="status"
+            @scuccess="scuccess"
+            :time="time"
+            :datareturn="datareturn"
+            :imageUrl="imageUrl">
           </Content>
         </div>
       </div>
@@ -44,7 +48,6 @@
             content="即时通讯"
             placement="top-start">
             <img
-              :class="{'active':isActive == 0}"
               src="../../assets/chats_icon.png"
               class="icon">
           </el-tooltip>
@@ -104,11 +107,11 @@
             content="mj"
             placement="top-start">
             <i class=" el-icon-camera icon"
+              :class="{'active':isActive == 0}"
               v-show="isOpenMj > 0"
               @click="changeChats(8)"
               style="font-size:20px;color:#666666"></i>
           </el-tooltip>
-
           <el-tooltip
             class="item"
             effect="dark"
@@ -122,6 +125,8 @@
           <span
             style="right: 30px;position: absolute;"
             :style="{color:color}">
+            <!-- <span
+              v-if="time < 60">{{ time }}s</span> -->
             <i v-if="color == 'green'"
               class="el-icon-circle-check"
               style="margin-right:5px;font-size: 14px;"></i>
@@ -133,6 +138,7 @@
         <SendText
           @sendText="sendTexts"
           @ok="getData"
+          :scuccess="scuccesss"
           @total="total">
         </SendText>
       </div>
@@ -160,7 +166,6 @@
 </template>
 
 <script>
-import { marked } from 'marked'
 import Notice from '@/components/notice.vue'
 import Menu from './components/menu.vue'
 import NoticeModal from './components/noticeModal.vue'
@@ -187,16 +192,29 @@ export default {
       isChats: 0,
       direction: 'ltr',
       chatList: [],
+
       chatLists: [],
       oldScrollTop: 0,
       phone: false,
       notice: '',
       arr: [],
       sdSatte: 0,
-      isOpenMj: 0,
       isOpenBing: 0,
       isOpenFlagStudio: 0,
-      mdRegex: ''
+      isOpenMj: 0,
+      mdRegex: '',
+      loadingImg: false,
+      promptZh: '',
+      timer: null,
+      status: '',
+      time: 60,
+      scuccesss: false,
+      datareturn: {
+        // promptEn: 'Golden Monkey',
+        // taskId: '7881601451882157'
+      },
+      imageUrl: ''
+      // imageUrl: 'https://img.v-wim.xyz/20230510/1683697381188.jpg'
     }
   },
   created() {},
@@ -216,23 +234,11 @@ export default {
         this.scrollToBottom()
       },
       deep: true
-    },
-    arr: {
-      handler(val) {
-        this.loading = false
-        this.isChats = val.length
-        this.chatList[0].answer = ''
-        this.chatList[0].answer = val.join('')
-        if (this.mdRegex.test(this.chatList[0].answer)) {
-          this.chatList[0].answer = marked(this.chatList[0].answer)
-        }
-      }
     }
   },
   methods: {
     getSdState() {
       this.$https('GETSDSTATE', {}).then(res => {
-        console.log(res.data)
         this.sdSatte = res.data.isOpenSd
         this.isOpenFlagStudio = res.data.isOpenFlagStudio
         this.isOpenBing = res.data.isOpenBing
@@ -240,7 +246,7 @@ export default {
       })
     },
     // 发送websockwt请求
-    initWebSocket() {
+    initWebSocket(ids) {
       let websocketUrl = this.wsUrl + '/chatWebSocket/' + JSON.parse(window.localStorage.getItem('userInfo')).userId
       // WebSocket与普通的请求所用协议有所不同，ws等同于http，wss等同于https
       this.webSock = new WebSocket(websocketUrl)
@@ -255,17 +261,72 @@ export default {
       //  传递参数  不需要传参就不传
       // this.webSocketSend(this.id)
     },
+    scuccess() {
+      this.scuccesss = true
+      clearInterval(this.timer)
+      this.timer = null
+      this.time = 60
+    },
     webSocketOnMessage(e) {
-      console.log(e.data)
+      console.log(e.data, '0202020929272553')
       //接收数据
-      // this.lists.push(jsonObj.message)
-      if (e.data.includes('\n')) {
-        let str = `${e.data.replace(/\n/g, '<br/>')}`
-        this.arr.push(str)
+      const data = JSON.parse(e.data)
+      if (data.imageUrl) {
+        this.imageUrl = data.imageUrl
+        this.status = data.status
+        if (data.status !== 'IN_PROGRESS') {
+          this.scuccesss = true
+        }
       } else {
-        this.arr.push(e.data)
+        this.loading = true
+        this.status = data.status
+        if (data.status !== 'IN_PROGRESS') {
+          this.scuccesss = true
+        }
+        setTimeout(() => {
+          this.loading = false
+        }, 2000)
       }
+      // this.lists.push(jsonObj.message)
+      // if (e.data.includes('\n')) {
+      //   let str = `${e.data.replace(/\n/g, '<br/>')}`
+      //   this.arr.push(str)
+      // } else {
+      //   this.arr.push(e.data)
+      // }
       // this.arr.push(e.data)
+    },
+    getCodes(TIME_COUNT) {
+      if (!this.timer) {
+        this.time = TIME_COUNT
+        this.disabled = true
+        this.timer = setInterval(() => {
+          if (this.time > 0 && this.time <= TIME_COUNT) {
+            this.time--
+          } else {
+            this.$https('LOOKSTATUS', {
+              taskId: this.datareturn.taskId
+            }).then(res => {
+              this.status = res.data.status
+              if (res.data.status == 'IN_PROGRESS') {
+                this.$message.info('画图中...')
+                clearInterval(this.timer)
+                this.timer = null
+                setTimeout(() => {
+                  this.getCodes(60)
+                }, 1000)
+              } else {
+                if (res.data.status == 'NOT_START' || res.data.status == 'FAILURE') {
+                  this.$message.error('生成失败，请重新发起')
+                }
+                clearInterval(this.timer)
+                this.timer = null
+                this.time = 60
+              }
+            })
+          }
+        }, 1000)
+      }
     },
     webSocketClose(e) {
       this.scoketText = '断开连接'
@@ -293,10 +354,26 @@ export default {
       }, 2000)
     },
     sendTexts(data) {
-      this.arr = []
-      this.chatList.unshift(data)
-      // this.loading = true
-      this.webSocketSend(data.question)
+      this.chatLists.unshift(data)
+      this.scuccesss = true
+      this.promptZh = data.question
+      this.$https('MJCHAT', {
+        action: 'IMAGINE',
+        prompt: data.question
+      }).then(res => {
+        this.datareturn = res.data
+        this.status = 'IN_PROGRESS'
+        this.arr = []
+        this.loading = true
+        this.getCodes(60)
+      })
+
+      //
+      // this.webSocketSend(data.question)
+    },
+    changeImg(data) {
+      this.datareturn = data
+      this.loadingImg = true
     },
     changeChats(e) {
       if (e == 1) {
@@ -316,8 +393,6 @@ export default {
         this.$router.push('/newBing/index')
       } else if (e == 7) {
         this.$router.push('/fsPage/index')
-      } else if (e == 8) {
-        this.$router.push('/mj/index')
       }
     },
     getData() {
@@ -325,24 +400,24 @@ export default {
         sendType: 1
       }).then(res => {
         this.notice = res.data.content
-        this.chatList = res.data.logList
-
-        if (this.chatList.length > 0) {
-          this.title = this.chatList[0].question
-          this.chatList.map(item => {
-            if (this.mdRegex.test(item.answer)) {
-              item.answer = marked(item.answer)
-            }
-          })
-        } else {
-          const obj = {
-            disabled: true,
-            question: 'New Chat',
-            answer: ''
-          }
-          this.chatList.push(obj)
-        }
-        this.kitList = res.data.kitList
+        // this.chatList = res.data.logList
+        this.chatList = []
+        // if (this.chatList.length > 0) {
+        //   this.title = this.chatList[0].question
+        //   this.chatList.map(item => {
+        //     if (this.mdRegex.test(item.answer)) {
+        //       item.answer = marked(item.answer)
+        //     }
+        //   })
+        // } else {
+        //   const obj = {
+        //     disabled: true,
+        //     question: 'New Chat',
+        //     answer: ''
+        //   }
+        //   this.chatList.push(obj)
+        // }
+        // this.kitList = res.data.kitList
         this.userInfo = {
           dayRemainingTimes: res.data.dayRemainingTimes,
           name: res.data.name,
@@ -477,7 +552,7 @@ export default {
   }
   .icon:hover,
   .icon.active {
-    filter: grayscale(0);
+    color: purple !important;
   }
 }
 .input_box {
@@ -545,6 +620,9 @@ export default {
     width: 50px !important;
     height: 50px !important;
   }
+}
+.icon.active {
+  color: purple;
 }
 </style>
 <style lang="scss">

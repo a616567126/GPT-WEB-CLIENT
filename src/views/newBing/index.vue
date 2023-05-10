@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-05-07 17:02:49
+ * @LastEditTime: 2023-05-10 16:35:16
  * @FilePath: /chat_gpt/src/views/newBing/index.vue
 -->
 <template>
@@ -100,6 +100,16 @@
           <el-tooltip
             class="item"
             effect="dark"
+            content="mj"
+            placement="top-start">
+            <i class=" el-icon-camera icon"
+              @click="changeChats(8)"
+              v-show="isOpenMj > 0"
+              style="font-size:20px;color:#666666"></i>
+          </el-tooltip>
+          <el-tooltip
+            class="item"
+            effect="dark"
             content="充值"
             placement="top-start">
             <img
@@ -186,6 +196,7 @@ export default {
       phone: false,
       notice: '',
       arr: [],
+      isOpenMj: 0,
       sdSatte: 0,
       isOpenBing: 0,
       isOpenFlagStudio: 0,
@@ -228,6 +239,7 @@ export default {
         this.sdSatte = res.data.isOpenSd
         this.isOpenFlagStudio = res.data.isOpenFlagStudio
         this.isOpenBing = res.data.isOpenBing
+        this.isOpenMj = res.data.isOpenMj
       })
     },
     // 发送websockwt请求

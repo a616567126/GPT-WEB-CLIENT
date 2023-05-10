@@ -5,13 +5,13 @@ export const baseUrl = 'https://gpt.v-wim.xyz-a-s'
  * @Author: 小白
  * @Date: 2022-04-25 15:58:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-05-07 18:16:40
+ * @LastEditTime: 2023-05-10 16:20:48
  * @FilePath: /chat_gpt/src/api/api.js
  */
 export const baseUrl = 'https://gpt.v-wim.xyz'
-// export const baseUrl = 'https://api.yixuefu.top'
+// export const baseUrl = 'https://6635-61-176-96-198.ngrok-free.app'
 export const wsUrl = 'wss://gpt.v-wim.xyz'
-// export const wsUrl = 'wss://ca1a-61-176-96-198.ngrok-free.app'
+// export const wsUrl = 'wss://6635-61-176-96-198.ngrok-free.app'
 
 // export const baseUrl = 'http://ee9qu3.natappfree.cc'
 export const HTTP_URI = {
@@ -39,6 +39,10 @@ export const HTTP_URI = {
   GETMODE: baseUrl + '/sd/getModel',
   GETMODES: baseUrl + '/sd/getSamplers',
   CREATEFD: baseUrl + '/flag/studio/create',
-  UPLOADIMG: baseUrl + '/flag/studio/getUploadLink'
+  UPLOADIMG: baseUrl + '/flag/studio/getUploadLink',
+  PICANDPIC: baseUrl + '/flag/studio/img/create',
+  MJCHAT: baseUrl + '/trigger/submit',
+  MJUV: baseUrl + '/trigger/submit/uv',
+  LOOKSTATUS:baseUrl + '/trigger/getTask'
 }
 export default { HTTP_URI, baseUrl }

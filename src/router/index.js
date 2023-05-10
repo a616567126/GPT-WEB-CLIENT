@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-05-07 17:36:01
+ * @LastEditTime: 2023-05-09 15:25:17
  * @FilePath: /chat_gpt/src/router/index.js
  */
 import Vue from 'vue'
@@ -79,6 +79,15 @@ export const routes = [
         path: '/fsPage/index',
         name: 'fsPage',
         component: () => import('../views/fsPage/index.vue')
+      },
+      {
+        name: 'MJ',
+        meta: {
+          title: 'MJ'
+        },
+        path: '/mj/index',
+        name: 'mj',
+        component: () => import('../views/mj/index.vue')
       },
       {
         name: 'newBing',

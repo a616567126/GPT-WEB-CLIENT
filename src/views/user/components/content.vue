@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-24 14:28:40
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-04-08 14:11:14
+ * @LastEditTime: 2023-05-10 15:21:13
  * @FilePath: /chat_gpt/src/views/user/components/content.vue
 -->
 <template>
@@ -30,7 +30,7 @@
           <div v-else
             class="markdown-body"
             v-highlight
-            v-html="obj.output">
+            v-html="item.content">
           </div>
         </div>
         <div v-else
@@ -40,10 +40,14 @@
             v-if="index < chatListes.length - 1"
             v-html="item.content">
           </div>
+          <!-- <div v-else
+            class="markdown-body"
+            v-highlight
+            v-html="obj.output"> -->
           <div v-else
             class="markdown-body"
             v-highlight
-            v-html="obj.output">
+            v-html="item.content">
           </div>
 
         </div>
@@ -85,6 +89,7 @@ export default {
       i: 0,
       timer: 0,
       chatListes: [],
+      typed: null,
       obj: {
         output: '',
         isEnd: false,
@@ -100,36 +105,48 @@ export default {
   watch: {
     chatLists: {
       handler(val) {
+        if (this.typed) {
+          console.log('typed', 'watch')
+          console.log(222)
+          this.typed = null
+        }
         this.chatListes = val
         if (val.length > 0) {
-          if (val[val.length - 1].role == 'assistant') {
-            if (this.mdRegex.test(val[val.length - 1].content)) {
-              this.initTyped(marked(val[val.length - 1].content))
-            } else {
-              this.initTyped(val[val.length - 1].content)
+          setTimeout(() => {
+            if (val[val.length - 1].role == 'assistant') {
+              if (this.mdRegex.test(val[val.length - 1].content)) {
+                this.initTyped(marked(val[val.length - 1].content))
+              } else {
+                this.initTyped(val[val.length - 1].content)
+              }
             }
-          }
-          for (var i = 0; i < val.length; i++) {
-            if (this.mdRegex.test(val[i].content)) {
-              val[i].content = marked(val[i].content)
+            for (var i = 0; i < val.length; i++) {
+              if (this.mdRegex.test(val[i].content)) {
+                val[i].content = marked(val[i].content)
+              }
             }
-          }
+          }, 500)
         }
       },
       deep: true
     }
   },
   mounted() {
+    if (this.typed) {
+      console.log('typed', 'mounted')
+      this.typed = null
+    }
     this.mdRegex = /[#*`|.png]/
     this.phone = JSON.parse(window.localStorage.getItem('phone'))
     this.chatListes = this.chatLists
     if (this.chatListes && this.chatListes.length > 0) {
       if (this.chatListes[this.chatListes.length - 1].role == 'assistant') {
-        if (this.mdRegex.test(this.chatListes[this.chatListes.length - 1].content)) {
-          this.initTyped(marked(this.chatListes[this.chatListes.length - 1].content))
-        } else {
-          this.initTyped(this.chatListes[this.chatListes.length - 1].content)
-        }
+        this.chatListes[this.chatListes.length - 1].content = marked(this.chatListes[this.chatListes.length - 1].content)
+        // if (this.mdRegex.test(this.chatListes[this.chatListes.length - 1].content)) {
+        //   this.initTyped(marked(this.chatListes[this.chatListes.length - 1].content))
+        // } else {
+        //   this.initTyped(this.chatListes[this.chatListes.length - 1].content)
+        // }
       }
       for (var j = 0; j < this.chatListes.length; j++) {
         if (this.mdRegex.test(this.chatListes[j].content)) {
@@ -142,7 +159,13 @@ export default {
   methods: {
     initTyped(input, fn, hooks) {
       const obj = this.obj
-      const typed = new EasyTyper(obj, input, fn, hooks)
+      this.typed = new EasyTyper(obj, input, fn, hooks)
+    }
+  },
+  beforeDestroy() {
+    // 销毁 Typed 实例
+    if (this.typed) {
+      this.typed.destroy()
     }
   }
 }

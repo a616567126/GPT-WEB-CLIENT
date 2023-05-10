@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-05-07 17:01:36
+ * @LastEditTime: 2023-05-10 16:34:06
  * @FilePath: /chat_gpt/src/views/user/index.vue
 -->
 <template>
@@ -108,6 +108,16 @@
           <el-tooltip
             class="item"
             effect="dark"
+            content="mj"
+            placement="top-start">
+            <i class=" el-icon-camera icon"
+              v-show="isOpenMj > 0"
+              @click="changeChats(8)"
+              style="font-size:20px;color:#666666"></i>
+          </el-tooltip>
+          <el-tooltip
+            class="item"
+            effect="dark"
             content="充值"
             placement="top-start">
             <img
@@ -188,6 +198,7 @@ export default {
       sdState: 0,
       isOpenFlagStudio: 0,
       isOpenBing: 0,
+      isOpenMj: 0,
       notice: ''
     }
   },
@@ -220,6 +231,7 @@ export default {
       this.$https('GETSDSTATE', {}).then(res => {
         this.sdState = res.data.isOpenSd
         this.isOpenBing = res.data.isOpenBing
+        this.isOpenMj = res.data.isOpenMj
         this.isOpenFlagStudio = res.data.isOpenFlagStudio
       })
     },
@@ -251,6 +263,8 @@ export default {
         this.$router.push('/newBing/index')
       } else if (e == 7) {
         this.$router.push('/fsPage/index')
+      } else if (e == 8) {
+        this.$router.push('/mj/index')
       } else {
         this.isActive = e
       }
