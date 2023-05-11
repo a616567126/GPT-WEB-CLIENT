@@ -122,8 +122,8 @@ export default {
           this.showSlide = true
         } else {
           this.getCodes()
-          this.$https('GETCODE', {
-            mobile: this.regform.mobile
+          this.$https('SENDMAILCODE', {
+            email: this.regform.email
           }).then(res => {
             if (res.status != 200) {
               this.$message.error(res.msg)
