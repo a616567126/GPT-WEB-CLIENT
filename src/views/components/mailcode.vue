@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-04-16 18:55:34
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-05-05 18:21:52
+ * @LastEditTime: 2023-05-11 19:32:29
  * @FilePath: /chat_gpt/src/views/components/mailcode.vue
 -->
 <template>

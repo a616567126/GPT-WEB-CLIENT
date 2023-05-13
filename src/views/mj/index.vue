@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-20 20:49:33
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-05-10 17:25:49
+ * @LastEditTime: 2023-05-13 10:09:55
  * @FilePath: /chat_gpt/src/views/mj/index.vue
 -->
 <template>
@@ -31,9 +31,14 @@
             :loadingImg="loadingImg"
             @changeImg="changeImg"
             :promptZh="promptZh"
+            :changeImgs="changeImgs"
             :status="status"
             @scuccess="scuccess"
             :time="time"
+            :userTimes="userTimes"
+            :codeNum="codeNum"
+            :userTime="userTime"
+            :imageUrlChange="imageUrlChange"
             :datareturn="datareturn"
             :imageUrl="imageUrl">
           </Content>
@@ -203,17 +208,27 @@ export default {
       isOpenFlagStudio: 0,
       isOpenMj: 0,
       mdRegex: '',
+      userTimes: 0,
       loadingImg: false,
       promptZh: '',
       timer: null,
       status: '',
+      changeImgs: false,
       time: 60,
       scuccesss: false,
+      codeNum: 0,
+      timeres: null,
+      times: 0,
+      changetimeres: null,
+      changetimes: 0,
       datareturn: {
         // promptEn: 'Golden Monkey',
         // taskId: '7881601451882157'
       },
-      imageUrl: ''
+      imageUrlChange: [],
+      // imageUrlChange: 'https://img.v-wim.xyz/20230511/1683807904820.jpg',
+      imageUrl: '',
+      userTime: ''
       // imageUrl: 'https://img.v-wim.xyz/20230510/1683697381188.jpg'
     }
   },
@@ -262,30 +277,59 @@ export default {
       // this.webSocketSend(this.id)
     },
     scuccess() {
-      this.scuccesss = true
+      this.scuccesss = false
       clearInterval(this.timer)
       this.timer = null
-      this.time = 60
     },
     webSocketOnMessage(e) {
       console.log(e.data, '0202020929272553')
       //接收数据
+
       const data = JSON.parse(e.data)
-      if (data.imageUrl) {
-        this.imageUrl = data.imageUrl
-        this.status = data.status
-        if (data.status !== 'IN_PROGRESS') {
-          this.scuccesss = true
+      console.log(data, 'index')
+      if (this.changeImgs == false) {
+        if (data.imageUrl) {
+          this.imageUrl = data.imageUrl
+          this.userTime = data.finishTime - data.submitTime
+          this.status = data.status
+          if (data.status !== 'IN_PROGRESS') {
+            this.scuccesss = true
+            clearInterval(this.timeres)
+            this.timeres = null
+          }
+        } else {
+          this.loading = true
+          this.status = data.status
+          if (data.status !== 'IN_PROGRESS') {
+            this.scuccesss = true
+            clearInterval(this.timeres)
+            this.timeres = null
+          }
+          setTimeout(() => {
+            this.loading = false
+          }, 2000)
         }
       } else {
-        this.loading = true
-        this.status = data.status
-        if (data.status !== 'IN_PROGRESS') {
-          this.scuccesss = true
+        if (data.imageUrl) {
+          this.imageUrlChange[this.imageUrlChange.length - 1].changeImageUrl = data.imageUrl
+          this.status = data.status
+          if (data.status !== 'IN_PROGRESS') {
+            this.scuccesss = true
+            clearInterval(this.changetimeres)
+            this.changetimeres = null
+          }
+        } else {
+          this.loading = true
+          this.status = data.status
+          if (data.status !== 'IN_PROGRESS') {
+            this.scuccesss = true
+            clearInterval(this.changetimeres)
+            this.changetimeres = null
+          }
+          setTimeout(() => {
+            this.loading = false
+          }, 2000)
         }
-        setTimeout(() => {
-          this.loading = false
-        }, 2000)
       }
       // this.lists.push(jsonObj.message)
       // if (e.data.includes('\n')) {
@@ -295,6 +339,29 @@ export default {
       //   this.arr.push(e.data)
       // }
       // this.arr.push(e.data)
+    },
+    getTimes() {
+      if (!this.timeres) {
+        this.times = 0
+        this.timeres = setInterval(() => {
+          this.times++
+          if (this.times > 0) {
+            this.userTimes = this.times
+          }
+        }, 1000)
+      }
+    },
+    getChangeTimes() {
+      if (!this.changetimeres) {
+        this.changetimes = 0
+        this.changetimeres = setInterval(() => {
+          this.changetimes++
+          if (this.changetimes > 0) {
+            this.imageUrlChange[this.imageUrlChange.length - 1].userTime = this.changetimes
+            this.$forceUpdate()
+          }
+        }, 1000)
+      }
     },
     getCodes(TIME_COUNT) {
       if (!this.timer) {
@@ -307,6 +374,7 @@ export default {
             this.$https('LOOKSTATUS', {
               taskId: this.datareturn.taskId
             }).then(res => {
+              this.codeNum += 1
               this.status = res.data.status
               if (res.data.status == 'IN_PROGRESS') {
                 this.$message.info('画图中...')
@@ -319,9 +387,11 @@ export default {
                 if (res.data.status == 'NOT_START' || res.data.status == 'FAILURE') {
                   this.$message.error('生成失败，请重新发起')
                 }
+                clearInterval(this.timeres)
+                this.timeres = null
                 clearInterval(this.timer)
                 this.timer = null
-                this.time = 60
+                // this.time = 60
               }
             })
           }
@@ -353,7 +423,15 @@ export default {
         // _this.isOne = 1;
       }, 2000)
     },
+
     sendTexts(data) {
+      this.chatLists = []
+      this.changeImgs = ''
+      this.imageUrl = ''
+      this.status = ''
+      this.codeNum = 0
+      this.getTimes()
+      this.datareturn = {}
       this.chatLists.unshift(data)
       this.scuccesss = true
       this.promptZh = data.question
@@ -372,7 +450,12 @@ export default {
       // this.webSocketSend(data.question)
     },
     changeImg(data) {
-      this.datareturn = data
+      this.imageUrlChange.push(data)
+      this.$message.success('正在重新生成')
+      this.changeImgs = true
+      this.getCodes(60)
+      this.getChangeTimes()
+      // this.datareturn.taskId = data.taskId
       this.loadingImg = true
     },
     changeChats(e) {

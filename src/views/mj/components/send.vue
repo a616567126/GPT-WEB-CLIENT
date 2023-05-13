@@ -4,7 +4,7 @@
  * @Author: smallWhite
  * @Date: 2023-03-24 14:30:48
  * @LastEditors: smallWhite
- * @LastEditTime: 2023-05-10 17:18:41
+ * @LastEditTime: 2023-05-12 19:56:20
  * @FilePath: /chat_gpt/src/views/mj/components/send.vue
 -->
 <template>
@@ -57,7 +57,8 @@ export default {
       }
     },
     scuccess(val) {
-      this.disabled = !val
+      this.disabled = val
+      console.log(val, '00')
     }
   },
   created() {
