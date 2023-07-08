@@ -10,7 +10,7 @@
 
 # **Project Title**  
 
-**Demo地址（2.0地址1.0已停止服务）：[https://gptai.v-wim.xyz](https://ai.v-wim.xyz/)**   
+**Demo地址（2.0地址1.0已停止服务）：[2.0地址](https://ai.v-wim.xyz/)**   
  
 **基于Vue2.0的GPTweb客户端页面**
  
